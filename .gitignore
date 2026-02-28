@@ -4,13 +4,12 @@ __pycache__/
 *$py.class
 venv/
 env/
+.venv/
 .env
 
-# Data & Images
-data/
-assets/
-!data/README.md
-!assets/README.md
+# Allow assets and test data for the app
+!assets/
+!data/
 
 # OS
 .DS_Store
