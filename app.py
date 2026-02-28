@@ -108,14 +108,14 @@ def render_take_action():
         with gr.Column(elem_classes="action-card"):
             logo_path = os.path.join(ASSETS_DIR, "nccm-logo.png")
             if os.path.exists(logo_path):
-                gr.Image(logo_path, show_label=False, container=False, interactive=False, elem_classes="logo-img")
+                gr.Image(logo_path, show_label=False, interactive=False, elem_classes="logo-img")
             gr.Markdown(f"**National Council of Canadian Muslims**\n\nChallenging Quebec's secularism laws to defend the rights of public sector employees.")
             gr.Button("Donate to NCCM", link="https://www.nccm.ca/donate/", variant="primary")
             
         with gr.Column(elem_classes="action-card"):
             logo_path = os.path.join(ASSETS_DIR, "CCLA-logo.png")
             if os.path.exists(logo_path):
-                gr.Image(logo_path, show_label=False, container=False, interactive=False, elem_classes="logo-img")
+                gr.Image(logo_path, show_label=False, interactive=False, elem_classes="logo-img")
             gr.Markdown(f"**Canadian Civil Liberties Association**\n\nActing as a vigilant watchdog for rights and freedoms in Canada.")
             gr.Button("Donate to CCLA", link="https://ccla.org/donate/", variant="primary")
 
@@ -128,7 +128,7 @@ custom_css = """
 .action-card { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color-primary); text-align: center; }
 .result-box { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 2px solid var(--border-color-primary); text-align: left; }
 .banner-img img { max-width: 100% !important; height: auto !important; max-height: 350px !important; border-radius: 12px !important; margin-bottom: 20px; }
-.at-work-banner img { width: auto !important; height: auto !important; max-height: 80px !important; object-fit: contain !important; border-radius: 8px !important; margin: 0 auto !important; display: block; }
+.at-work-banner img { width: auto !important; height: auto !important; max-height: 300px !important; border-radius: 12px !important; margin: 0 auto !important; display: block; }
 .logo-img img { height: 60px !important; width: auto !important; object-fit: contain !important; margin: 0 auto 15px auto !important; display: block; }
 .cta-header { text-align: center; margin-top: 10px !important; margin-bottom: 5px !important; }
 .cta-subtext { text-align: center; margin-bottom: 20px !important; color: var(--body-text-color-subdued); }
@@ -137,7 +137,6 @@ custom_css = """
 .glossary-box { background: var(--background-fill-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-accent); margin-bottom: 15px; }
 """
 
-# Theme and CSS moved back to constructor for HF compatibility
 with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as demo:
     gr.Markdown("# Banned by 21: Quebec Employment Eligibility")
     
@@ -147,8 +146,8 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
                 with gr.Column(scale=2):
                     banner_path = os.path.join(ASSETS_DIR, "banned-by-21.png")
                     if os.path.exists(banner_path):
-                        gr.Image(banner_path, show_label=False, container=False, interactive=False, elem_classes="banner-img")
-                    gr.Markdown("## The Fight for Civil Liberties in Quebec\nIn 2019, Quebec passed **Bill 21**, followed by the expansion of **Bill 94** in 2025. These laws prohibit public sector employees from wearing religious symbols.")
+                        gr.Image(banner_path, show_label=False, interactive=False, elem_classes="banner-img")
+                    gr.Markdown("## The Fight for Civil Liberties in Quebec\nIn 2019, Quebec passed **Bill 21**, followed by **Bill 94** in 2025. These laws prohibit public sector employees from wearing religious symbols while exercising their functions.")
                     start_btn = gr.Button("Enter Eligibility Checker", variant="primary")
                 with gr.Column(scale=1):
                     gr.HTML('<div class="stat-box"><h2>71%</h2><p>of Muslim women surveyed consider leaving Quebec.</p></div><div class="stat-box"><h2>88%</h2><p>felt Quebec became less welcoming since 2019.</p></div>')
@@ -180,7 +179,7 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
         with gr.Tab("About the Laws", id="laws"):
             banner_work_path = os.path.join(ASSETS_DIR, "banned-by-21-at-work.png")
             if os.path.exists(banner_work_path):
-                gr.Image(banner_work_path, show_label=False, container=False, interactive=False, elem_classes="at-work-banner")
+                gr.Image(banner_work_path, show_label=False, interactive=False, elem_classes="at-work-banner")
             with gr.Row():
                 with gr.Column():
                     gr.Markdown("### The Legislation\n**Bill 21:** Prohibits symbols for authority figures.\n**Bill 94:** Expands ban to all school staff.\n\n### Legal Resources\n* [Bill 21 Official Text](https://www.legisquebec.gouv.qc.ca/en/document/cs/L-0.3)\n* [Bill 94 Official Text](https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-94-43-1.html)\n* [Canadian Charter of Rights](https://www.canada.ca/en/canadian-heritage/services/how-rights-protected/guide-canadian-charter-rights-freedoms.html)")
