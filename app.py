@@ -16,7 +16,6 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model = CLIPModel.from_pretrained(model_id).to(device)
 processor = CLIPProcessor.from_pretrained(model_id)
 
-# Labels refined for maximum accuracy and differentiation between religious vs secular
 DETECTION_LABELS = [
     "a person wearing a religious hijab",
     "a person wearing a religious kippah or taqiya cap",
@@ -58,10 +57,6 @@ EXAMPLES = [[img] for img in EXAMPLE_IMAGES]
 # --- 3. Core Logic Functions ---
 
 def analyze_image(image):
-    """
-    Core AI inference function. 
-    Exposed for verification scripts.
-    """
     if image is None: return None, 0.0
     inputs = processor(text=DETECTION_LABELS, images=image, return_tensors="pt", padding=True).to(device)
     with torch.no_grad():
@@ -71,14 +66,9 @@ def analyze_image(image):
     return DETECTION_LABELS[max_idx], probs[0][max_idx].item()
 
 def get_eligibility(image, job):
-    """
-    Combines AI detection with legislative logic.
-    """
     if image is None: return "Upload a photo to see your eligibility status."
     
-    # Tiny delay for UI processing indicator
     time.sleep(0.5) 
-    
     label, confidence = analyze_image(image)
 
     religious_items = [
@@ -95,7 +85,6 @@ def get_eligibility(image, job):
     status, color = "Eligible ✅", "green"
     reason = f"Detected: {label} ({confidence:.1%})"
 
-    # Final Verification Logic
     if label in religious_items and job in RESTRICTED_JOBS:
         status, color = "Ineligible ❌", "red"
         reason = f"Detected: {label}. Restricted under Bill 21 / Bill 94 for this role."
@@ -139,7 +128,7 @@ custom_css = """
 .action-card { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color-primary); text-align: center; }
 .result-box { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 2px solid var(--border-color-primary); text-align: left; }
 .banner-img img { max-width: 100% !important; height: auto !important; max-height: 350px !important; border-radius: 12px !important; margin-bottom: 20px; }
-.at-work-banner img { width: auto !important; height: auto !important; max-height: 120px !important; object-fit: contain !important; border-radius: 8px !important; margin: 0 auto !important; display: block; }
+.at-work-banner img { width: auto !important; height: auto !important; max-height: 80px !important; object-fit: contain !important; border-radius: 8px !important; margin: 0 auto !important; display: block; }
 .logo-img img { height: 60px !important; width: auto !important; object-fit: contain !important; margin: 0 auto 15px auto !important; display: block; }
 .cta-header { text-align: center; margin-top: 10px !important; margin-bottom: 5px !important; }
 .cta-subtext { text-align: center; margin-bottom: 20px !important; color: var(--body-text-color-subdued); }
@@ -148,8 +137,8 @@ custom_css = """
 .glossary-box { background: var(--background-fill-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-accent); margin-bottom: 15px; }
 """
 
-# Blocks initialized with only the title to avoid warnings
-with gr.Blocks(title="Banned by 21") as demo:
+# Theme and CSS moved back to constructor for HF compatibility
+with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as demo:
     gr.Markdown("# Banned by 21: Quebec Employment Eligibility")
     
     with gr.Tabs() as tabs:
@@ -181,7 +170,7 @@ with gr.Blocks(title="Banned by 21") as demo:
 
         with gr.Tab("Human Impact", id="human_impact"):
             gr.Markdown("## Real Stories: The Human Cost\nThis video highlights the stories of women who have already lost their jobs following the expansion of the law in 2025.")
-            gr.HTML('<div style="margin-bottom: 24px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-drop);"><iframe width="100%" height="500" src="https://www.youtube.com/embed/urcZnCopNAc" frameborder="0" allowfullscreen></iframe></div>')
+            gr.HTML('<div style="margin-bottom: 24px; border-radius: 12px; overflow: hidden;"><iframe width="100%" height="500" src="https://www.youtube.com/embed/urcZnCopNAc" frameborder="0" allowfullscreen></iframe></div>')
             render_take_action()
 
         with gr.Tab("How it Works", id="how_it_works"):
@@ -209,5 +198,4 @@ with gr.Blocks(title="Banned by 21") as demo:
     gr.Markdown("*Created by Bilal Shirazi (bilalshirazi.com)*")
 
 if __name__ == "__main__":
-    # Theme and CSS passed to launch() per Gradio 6.0 standards
-    demo.launch(server_name="0.0.0.0", allowed_paths=[ASSETS_DIR, DATA_DIR], theme=gr.themes.Soft(), css=custom_css)
+    demo.launch(server_name="0.0.0.0", allowed_paths=[ASSETS_DIR, DATA_DIR])
