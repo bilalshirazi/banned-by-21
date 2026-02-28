@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Data & Images
+data/
+assets/
+!data/README.md
+!assets/README.md
+
+# OS
+.DS_Store
+Thumbs.db
