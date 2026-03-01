@@ -40,16 +40,12 @@ DETECTION_LABELS = [
 
 # --- 2. Asset Helpers ---
 def get_img_html(filename, height="auto", width="auto", max_height="none"):
-    """
-    Encodes an image to Base64 for bulletproof display in Gradio HTML.
-    Bypasses file serving issues and API schema bugs completely.
-    """
     path = os.path.join(ASSETS_DIR, filename)
     if os.path.exists(path):
         with open(path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
             return f'<img src="data:image/png;base64,{data}" style="height: {height}; width: {width}; max-height: {max_height}; object-fit: contain; margin: 0 auto; display: block; border-radius: 12px;">'
-    return f"<!-- Image {filename} not found -->"
+    return ""
 
 # --- 3. Core Logic Functions ---
 def analyze_image(image):
@@ -186,11 +182,17 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
             gr.Markdown("**Canadian Civil Liberties Association**\n\nActing as a vigilant watchdog for rights and freedoms across Canada.")
             gr.Button("Donate to CCLA", link="https://ccla.org/donate/", variant="primary")
 
-    # --- 7. Event Wiring ---
+    # Event Wiring
     start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs, api_name=False)
     
-    # Corrected lambda to accept the SelectData event object
-    gallery.select(fn=lambda evt: evt.value['image']['path'], outputs=image_input, api_name=False)
+    # DEFENSIVE SELECT HANDLER: Fixes the 'NoneType' and 'AttributeError' bugs
+    def on_select(evt: gr.SelectData):
+        if evt is not None and hasattr(evt, 'value'):
+            # Return the path of the selected image
+            return evt.value['image']['path']
+        return None
+
+    gallery.select(fn=on_select, outputs=image_input, api_name=False)
     
     submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=[status_output], show_progress="full", api_name=False)
 
@@ -199,4 +201,4 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
     gr.Markdown("*Created by Bilal Shirazi (bilalshirazi.com)*")
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0")
+    demo.launch(server_name="0.0.0.0", show_api=False)
