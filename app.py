@@ -61,17 +61,9 @@ def get_eligibility(image, job):
     if image is None: return "## Status: Pending\nPlease upload an image to begin."
     
     time.sleep(0.5) 
-    
     label, confidence = analyze_image(image)
 
-    religious_items = [
-        "a person wearing a religious hijab", "a person wearing a religious kippah or taqiya cap", 
-        "a person wearing a religious sikh turban", "a person wearing a religious cross or crucifix necklace",
-        "a person wearing a sikh kirpan ceremonial dagger", "a person wearing a sikh kara bracelet",
-        "a person wearing a catholic nun's habit", "a person wearing a religious buddhist monk's saffron robe",
-        "a person wearing a clerical collar", "a person with a religious bindi, tilak, or tilakah marking on their forehead",
-        "a person wearing religious jewish tzitzit tassels"
-    ]
+    religious_items = ["a person wearing a religious hijab", "a person wearing a religious kippah or taqiya cap", "a person wearing a religious sikh turban", "a person wearing a religious cross or crucifix necklace", "a person wearing a sikh kirpan ceremonial dagger", "a person wearing a sikh kara bracelet", "a person wearing a catholic nun's habit", "a person wearing a religious buddhist monk's saffron robe", "a person wearing a clerical collar", "a person with a religious bindi, tilak, or tilakah marking on their forehead", "a person wearing religious jewish tzitzit tassels"]
     face_coverings = ["a person wearing a religious niqab or burqa face covering"]
     safe_items = ["a person wearing a medical face mask", "a person wearing a baseball cap", "a person wearing large headphones", "a person wearing a winter hat", "a person with no religious symbols, markings, or headwear"]
 
@@ -106,8 +98,8 @@ RESTRICTED_JOBS = [
     "President and Vice-Presidents of the National Assembly"
 ]
 
-EXAMPLE_IMAGES = sorted(glob.glob(os.path.join(DATA_DIR, "*.png")))
-EXAMPLES = [[img] for img in EXAMPLE_IMAGES]
+# Get paths for the gallery
+PERSPECTIVE_GALLERY = sorted(glob.glob(os.path.join(DATA_DIR, "*.png")))
 
 # --- 5. UI Layout ---
 custom_css = """
@@ -118,6 +110,7 @@ custom_css = """
 .action-card { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color-primary); text-align: center; margin-bottom: 15px; }
 .result-display { padding: 20px; border-radius: 12px; background: var(--background-fill-secondary); border: 2px solid var(--border-color-primary); min-height: 100px; }
 .glossary-box { background: var(--background-fill-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-accent); margin-bottom: 10px; }
+.gallery-container { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color-primary); margin-top: 20px; }
 """
 
 with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as demo:
@@ -140,7 +133,17 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
                 with gr.Column(scale=1):
                     gr.Markdown("### 1. Photo Input")
                     image_input = gr.Image(label="Upload or Use Webcam", type="pil", height=400, sources=["upload", "webcam"])
-                    gr.Markdown("*Note: For demonstration, you can upload any of the sample images from the project folder.*")
+                    
+                    with gr.Column(elem_classes="gallery-container"):
+                        gr.Markdown("### 📸 Community Perspectives\nClick a sample image below to see how the law affects different Canadians.")
+                        gallery = gr.Gallery(
+                            value=PERSPECTIVE_GALLERY,
+                            columns=6,
+                            rows=4,
+                            height="auto",
+                            allow_preview=False,
+                            show_label=False
+                        )
                 
                 with gr.Column(scale=1):
                     gr.Markdown("### 2. Job & Status")
@@ -156,7 +159,7 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
 
         # --- ABOUT THE LAWS ---
         with gr.Tab("About the Laws", id="laws"):
-            gr.HTML(get_img_html("banned-by-21-at-work.png", height="450px"))
+            gr.HTML(get_img_html("banned-by-21-at-work.png", height="80px"))
             with gr.Row():
                 with gr.Column():
                     gr.Markdown("### The Legislation\n**Bill 21:** Prohibits symbols for authority figures.\n**Bill 94:** Expands ban to all school staff.\n\n### Legal Resources\n* [Bill 21 Official Text](https://www.legisquebec.gouv.qc.ca/en/document/cs/L-0.3)\n* [Bill 94 Official Text](https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-94-43-1.html)\n* [Canadian Charter of Rights](https://www.canada.ca/en/canadian-heritage/services/how-rights-protected/guide-canadian-charter-rights-freedoms.html)")
@@ -182,6 +185,10 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
 
     # Event Wiring
     start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs, api_name=False)
+    
+    # Gallery selection updates the image and runs the check
+    gallery.select(fn=lambda x: x.value['image']['path'], outputs=image_input, api_name=False)
+    
     submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=[status_output], show_progress="full", api_name=False)
 
     gr.Markdown("---")
