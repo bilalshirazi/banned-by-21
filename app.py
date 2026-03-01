@@ -27,7 +27,7 @@ DETECTION_LABELS = [
     "a person wearing a sikh kirpan ceremonial dagger",
     "a person wearing a sikh kara bracelet",
     "a person wearing a catholic nun's habit",
-    "a person wearing a buddhist monk's saffron robe",
+    "a person wearing a religious buddhist monk's saffron robe",
     "a person wearing a clerical collar",
     "a person with a religious bindi, tilak, or tilakah marking on their forehead",
     "a person wearing religious jewish tzitzit tassels",
@@ -48,18 +48,21 @@ def get_img_html(filename, height="auto", width="auto", max_height="none"):
     return ""
 
 # --- 3. Core Logic Functions ---
-def get_eligibility(image, job):
-    if image is None: return "## Status: Pending\nPlease upload an image to begin."
-    
-    time.sleep(0.5) 
-    
+def analyze_image(image):
+    if image is None: return None, 0.0
     inputs = processor(text=DETECTION_LABELS, images=image, return_tensors="pt", padding=True).to(device)
     with torch.no_grad():
         outputs = model(**inputs)
     probs = outputs.logits_per_image.softmax(dim=1)
     max_idx = probs.argmax().item()
-    label = DETECTION_LABELS[max_idx]
-    confidence = probs[0][max_idx].item()
+    return DETECTION_LABELS[max_idx], probs[0][max_idx].item()
+
+def get_eligibility(image, job):
+    if image is None: return "## Status: Pending\nPlease upload an image to begin."
+    
+    time.sleep(0.5) 
+    
+    label, confidence = analyze_image(image)
 
     religious_items = [
         "a person wearing a religious hijab", "a person wearing a religious kippah or taqiya cap", 
@@ -169,15 +172,15 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
     with gr.Row():
         with gr.Column(elem_classes="action-card"):
             gr.HTML(get_img_html("nccm-logo.png", height="50px"))
-            gr.Markdown("**NCCM**\n\nChallenging Quebec's secularism laws to defend the rights of public sector employees.")
+            gr.Markdown("**National Council of Canadian Muslims**\n\nChallenging Quebec's secularism laws to defend the rights of public sector employees.")
             gr.Button("Donate to NCCM", link="https://www.nccm.ca/donate/", variant="primary")
             
         with gr.Column(elem_classes="action-card"):
             gr.HTML(get_img_html("CCLA-logo.png", height="50px"))
-            gr.Markdown("**CCLA**\n\nActing as a vigilant watchdog for rights and freedoms across Canada.")
+            gr.Markdown("**Canadian Civil Liberties Association**\n\nActing as a vigilant watchdog for rights and freedoms across Canada.")
             gr.Button("Donate to CCLA", link="https://ccla.org/donate/", variant="primary")
 
-    # Event Wiring - Disabling API naming to prevent schema generation bug
+    # Event Wiring
     start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs, api_name=False)
     submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=[status_output], show_progress="full", api_name=False)
 
@@ -186,5 +189,4 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
     gr.Markdown("*Created by Bilal Shirazi (bilalshirazi.com)*")
 
 if __name__ == "__main__":
-    # Final production settings: Disable SSR and show_api to bypass internal Gradio bugs
-    demo.launch(server_name="0.0.0.0", show_api=False, ssr=False)
+    demo.launch(server_name="0.0.0.0", show_api=False)
