@@ -40,12 +40,16 @@ DETECTION_LABELS = [
 
 # --- 2. Asset Helpers ---
 def get_img_html(filename, height="auto", width="auto", max_height="none"):
+    """
+    Encodes an image to Base64 for bulletproof display in Gradio HTML.
+    Bypasses file serving issues and API schema bugs completely.
+    """
     path = os.path.join(ASSETS_DIR, filename)
     if os.path.exists(path):
         with open(path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
             return f'<img src="data:image/png;base64,{data}" style="height: {height}; width: {width}; max-height: {max_height}; object-fit: contain; margin: 0 auto; display: block; border-radius: 12px;">'
-    return ""
+    return f"<!-- Image {filename} not found -->"
 
 # --- 3. Core Logic Functions ---
 def analyze_image(image):
@@ -98,7 +102,6 @@ RESTRICTED_JOBS = [
     "President and Vice-Presidents of the National Assembly"
 ]
 
-# Get paths for the gallery
 PERSPECTIVE_GALLERY = sorted(glob.glob(os.path.join(DATA_DIR, "*.png")))
 
 # --- 5. UI Layout ---
@@ -159,7 +162,7 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
 
         # --- ABOUT THE LAWS ---
         with gr.Tab("About the Laws", id="laws"):
-            gr.HTML(get_img_html("banned-by-21-at-work.png", height="80px"))
+            gr.HTML(get_img_html("banned-by-21-at-work.png", height="350px"))
             with gr.Row():
                 with gr.Column():
                     gr.Markdown("### The Legislation\n**Bill 21:** Prohibits symbols for authority figures.\n**Bill 94:** Expands ban to all school staff.\n\n### Legal Resources\n* [Bill 21 Official Text](https://www.legisquebec.gouv.qc.ca/en/document/cs/L-0.3)\n* [Bill 94 Official Text](https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-94-43-1.html)\n* [Canadian Charter of Rights](https://www.canada.ca/en/canadian-heritage/services/how-rights-protected/guide-canadian-charter-rights-freedoms.html)")
@@ -183,11 +186,11 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
             gr.Markdown("**Canadian Civil Liberties Association**\n\nActing as a vigilant watchdog for rights and freedoms across Canada.")
             gr.Button("Donate to CCLA", link="https://ccla.org/donate/", variant="primary")
 
-    # Event Wiring
+    # --- 7. Event Wiring ---
     start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs, api_name=False)
     
-    # Gallery selection updates the image and runs the check
-    gallery.select(fn=lambda x: x.value['image']['path'], outputs=image_input, api_name=False)
+    # Corrected lambda to accept the SelectData event object
+    gallery.select(fn=lambda evt: evt.value['image']['path'], outputs=image_input, api_name=False)
     
     submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=[status_output], show_progress="full", api_name=False)
 
@@ -196,4 +199,4 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
     gr.Markdown("*Created by Bilal Shirazi (bilalshirazi.com)*")
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", show_api=False)
+    demo.launch(server_name="0.0.0.0")
