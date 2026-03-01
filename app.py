@@ -24,13 +24,13 @@ DETECTION_LABELS = [
     "a person wearing a religious niqab or burqa face covering",
     "a person with their face covered by a cloth or mask",
     "a person wearing a religious cross or crucifix necklace",
-    "a person wearing a religious sikh kirpan ceremonial dagger",
-    "a person wearing a religious sikh kara bracelet",
-    "a person wearing a religious catholic nun's habit",
-    "a person wearing a religious buddhist monk's saffron robe",
-    "a person wearing a religious clerical collar",
+    "a person wearing a sikh kirpan ceremonial dagger",
+    "a person wearing a sikh kara bracelet",
+    "a person wearing a catholic nun's habit",
+    "a person wearing a buddhist monk's saffron robe",
+    "a person wearing a clerical collar",
     "a person with a religious bindi, tilak, or tilakah marking on their forehead",
-    "a person wearing religious jewish tzitzit tassels at their waist",
+    "a person wearing religious jewish tzitzit tassels",
     "a person wearing a medical face mask",
     "a person wearing a baseball cap",
     "a person wearing large headphones",
@@ -38,32 +38,37 @@ DETECTION_LABELS = [
     "a person with no religious symbols, markings, or headwear"
 ]
 
-# --- 2. Helper Functions for Assets ---
-def get_img_html(filename, height="auto", width="auto", style=""):
+# --- 2. Asset Helpers ---
+def get_img_html(filename, height="auto", width="auto", max_height="none"):
     path = os.path.join(ASSETS_DIR, filename)
     if os.path.exists(path):
         with open(path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
-            return f'<img src="data:image/png;base64,{data}" style="height: {height}; width: {width}; {style} border-radius: 8px; display: block; margin: 0 auto;">'
+            return f'<img src="data:image/png;base64,{data}" style="height: {height}; width: {width}; max-height: {max_height}; object-fit: contain; margin: 0 auto; display: block; border-radius: 12px;">'
     return ""
 
 # --- 3. Core Logic Functions ---
-def analyze_image(image):
-    if image is None: return None, 0.0
+def get_eligibility(image, job):
+    if image is None: return "## Status: Pending\nPlease upload an image to begin."
+    
+    time.sleep(0.5) 
+    
     inputs = processor(text=DETECTION_LABELS, images=image, return_tensors="pt", padding=True).to(device)
     with torch.no_grad():
         outputs = model(**inputs)
     probs = outputs.logits_per_image.softmax(dim=1)
     max_idx = probs.argmax().item()
-    return DETECTION_LABELS[max_idx], probs[0][max_idx].item()
+    label = DETECTION_LABELS[max_idx]
+    confidence = probs[0][max_idx].item()
 
-def get_eligibility(image, job):
-    if image is None: return "## Step 1 Required\nPlease upload a photo or use the webcam to check your status."
-    
-    time.sleep(0.5) 
-    label, confidence = analyze_image(image)
-
-    religious_items = ["a person wearing a religious hijab", "a person wearing a religious kippah or taqiya cap", "a person wearing a religious sikh turban", "a person wearing a religious cross or crucifix necklace", "a person wearing a religious sikh kirpan ceremonial dagger", "a person wearing a religious sikh kara bracelet", "a person wearing a religious catholic nun's habit", "a person wearing a religious buddhist monk's saffron robe", "a person wearing a religious clerical collar", "a person with a religious bindi, tilak, or tilakah marking on their forehead", "a person wearing religious jewish tzitzit tassels at their waist"]
+    religious_items = [
+        "a person wearing a religious hijab", "a person wearing a religious kippah or taqiya cap", 
+        "a person wearing a religious sikh turban", "a person wearing a religious cross or crucifix necklace",
+        "a person wearing a sikh kirpan ceremonial dagger", "a person wearing a sikh kara bracelet",
+        "a person wearing a catholic nun's habit", "a person wearing a religious buddhist monk's saffron robe",
+        "a person wearing a clerical collar", "a person with a religious bindi, tilak, or tilakah marking on their forehead",
+        "a person wearing religious jewish tzitzit tassels"
+    ]
     face_coverings = ["a person wearing a religious niqab or burqa face covering"]
     safe_items = ["a person wearing a medical face mask", "a person wearing a baseball cap", "a person wearing large headphones", "a person wearing a winter hat", "a person with no religious symbols, markings, or headwear"]
 
@@ -72,18 +77,18 @@ def get_eligibility(image, job):
 
     if label in religious_items and job in RESTRICTED_JOBS:
         status, color = "Ineligible ❌", "red"
-        reason = f"Detected: {label}. This attire is restricted for this role under Bill 21 / Bill 94."
+        reason = f"Detected: {label}. Restricted under Bill 21 / Bill 94 for this role."
     elif label in face_coverings:
         status, color = "Ineligible ❌", "red"
         reason = f"Detected: {label}. Face coverings are restricted in the Quebec education network (Bill 94)."
     elif label in safe_items:
         reason = f"The AI detected a non-restricted appearance."
-    elif confidence < 0.35:
+    elif confidence < 0.30:
         reason = "No clear religious symbols detected."
 
     return f"## {status}\n**Details:** {reason}"
 
-# --- 4. UI Data ---
+# --- 4. Legislative Data ---
 RESTRICTED_JOBS = [
     "Principals, vice-principals, and teachers of public educational institutions",
     "School service centre personnel (support staff, daycare workers, supervisors)",
@@ -98,6 +103,9 @@ RESTRICTED_JOBS = [
     "President and Vice-Presidents of the National Assembly"
 ]
 
+EXAMPLE_IMAGES = sorted(glob.glob(os.path.join(DATA_DIR, "*.png")))
+EXAMPLES = [[img] for img in EXAMPLE_IMAGES]
+
 # --- 5. UI Layout ---
 custom_css = """
 .gradio-container { max-width: 1200px !important; margin: 0 auto !important; }
@@ -105,8 +113,8 @@ custom_css = """
 .stat-box h2 { font-size: 2.5em !important; font-weight: 900 !important; color: #ef4444 !important; margin: 0 !important; }
 .stat-box p { font-weight: 600 !important; font-size: 1.1em !important; margin: 5px 0 0 0 !important; }
 .action-card { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color-primary); text-align: center; margin-bottom: 15px; }
-.glossary-box { background: var(--background-fill-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-accent); margin-bottom: 10px; }
 .result-display { padding: 20px; border-radius: 12px; background: var(--background-fill-secondary); border: 2px solid var(--border-color-primary); min-height: 100px; }
+.glossary-box { background: var(--background-fill-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-accent); margin-bottom: 10px; }
 """
 
 with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as demo:
@@ -117,8 +125,8 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
         with gr.Tab("Home", id="home"):
             with gr.Row():
                 with gr.Column(scale=2):
-                    gr.HTML(get_img_html("banned-by-21.png", style="max-height: 350px;"))
-                    gr.Markdown("## The Fight for Civil Liberties in Quebec\nIn 2019, Quebec passed **Bill 21**, followed by **Bill 94** in 2025. These laws prohibit public sector employees from wearing religious symbols while exercising their functions.")
+                    gr.HTML(get_img_html("banned-by-21.png", max_height="350px"))
+                    gr.Markdown("## The Fight for Civil Liberties in Quebec\nIn 2019, Quebec passed **Bill 21**, followed by the expansion of **Bill 94** in 2025. These laws prohibit public sector employees from wearing religious symbols while exercising their functions.")
                     start_btn = gr.Button("Enter Eligibility Checker", variant="primary")
                 with gr.Column(scale=1):
                     gr.HTML('<div class="stat-box"><h2>71%</h2><p>consider leaving Quebec.</p></div><div class="stat-box"><h2>88%</h2><p>felt less welcoming since 2019.</p></div>')
@@ -135,7 +143,6 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
                     gr.Markdown("### 2. Job & Status")
                     job_dropdown = gr.Dropdown(label="Select Profession", choices=RESTRICTED_JOBS, value=RESTRICTED_JOBS[0])
                     submit_btn = gr.Button("Check My Status", variant="primary")
-                    
                     with gr.Group(elem_classes="result-display"):
                         status_output = gr.Markdown("Waiting for input...")
 
@@ -146,7 +153,7 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
 
         # --- ABOUT THE LAWS ---
         with gr.Tab("About the Laws", id="laws"):
-            gr.HTML(get_img_html("banned-by-21-at-work.png", height="300px"))
+            gr.HTML(get_img_html("banned-by-21-at-work.png", height="450px"))
             with gr.Row():
                 with gr.Column():
                     gr.Markdown("### The Legislation\n**Bill 21:** Prohibits symbols for authority figures.\n**Bill 94:** Expands ban to all school staff.\n\n### Legal Resources\n* [Bill 21 Official Text](https://www.legisquebec.gouv.qc.ca/en/document/cs/L-0.3)\n* [Bill 94 Official Text](https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-94-43-1.html)\n* [Canadian Charter of Rights](https://www.canada.ca/en/canadian-heritage/services/how-rights-protected/guide-canadian-charter-rights-freedoms.html)")
@@ -154,29 +161,30 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
                     gr.Markdown("### Key Terms")
                     gr.HTML("<div class='glossary-box'><strong>Notwithstanding Clause:</strong> Section 33, allowing governments to override Charter rights.</div><div class='glossary-box'><strong>Laicity:</strong> State neutrality toward all religions.</div>")
 
-    # --- PERMANENT ADVOCACY SECTION (RENDERED ON EVERY TAB) ---
+    # --- PERMANENT ADVOCACY SECTION ---
     gr.Markdown("---")
     gr.Markdown("## Defend Civil Liberties: Take Action", elem_classes="cta-header")
-    gr.Markdown("The NCCM and CCLA have partnered to take the civil liberties battle to the Supreme Court of Canada.", elem_classes="cta-subtext")
+    gr.Markdown("The NCCM and CCLA have partnered to take the civil liberties battle to the Supreme Court of Canada.")
     
     with gr.Row():
         with gr.Column(elem_classes="action-card"):
             gr.HTML(get_img_html("nccm-logo.png", height="50px"))
-            gr.Markdown("**National Council of Canadian Muslims**\n\nChallenging Quebec's secularism laws to defend the rights of public sector employees.")
+            gr.Markdown("**NCCM**\n\nChallenging Quebec's secularism laws to defend the rights of public sector employees.")
             gr.Button("Donate to NCCM", link="https://www.nccm.ca/donate/", variant="primary")
             
         with gr.Column(elem_classes="action-card"):
             gr.HTML(get_img_html("CCLA-logo.png", height="50px"))
-            gr.Markdown("**Canadian Civil Liberties Association**\n\nActing as a vigilant watchdog for rights and freedoms across Canada.")
+            gr.Markdown("**CCLA**\n\nActing as a vigilant watchdog for rights and freedoms across Canada.")
             gr.Button("Donate to CCLA", link="https://ccla.org/donate/", variant="primary")
 
-    # Event Wiring
-    start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs)
-    submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=[status_output], show_progress="full")
+    # Event Wiring - Disabling API naming to prevent schema generation bug
+    start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs, api_name=False)
+    submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=[status_output], show_progress="full", api_name=False)
 
     gr.Markdown("---")
     gr.Markdown("*Disclaimer: This tool is for informational and advocacy purposes. Images are processed locally in memory and not stored on any server.*")
     gr.Markdown("*Created by Bilal Shirazi (bilalshirazi.com)*")
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0")
+    # Final production settings: Disable SSR and show_api to bypass internal Gradio bugs
+    demo.launch(server_name="0.0.0.0", show_api=False, ssr=False)
