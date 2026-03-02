@@ -171,7 +171,7 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: an
     min-height: 80px; 
 }
 
-/* Gallery Optimization - Strict 60px Thumbnails */
+/* Gallery Optimization - Expert Grid */
 .gallery-container { 
     width: 100% !important; 
     padding: 15px; 
@@ -180,44 +180,47 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: an
     margin-top: 10px;
     box-sizing: border-box !important;
 }
-#perspective-gallery { 
+/* Remove all internal scrollbars and borders from Gradio's wrapper */
+#perspective-gallery, 
+#perspective-gallery > .gallery,
+#perspective-gallery > .gallery > div {
     background: transparent !important;
     border: none !important;
-    max-height: 250px !important;
-    overflow-y: auto !important;
-}
-/* Force the container to allow wrapping */
-#perspective-gallery .gallery,
-#perspective-gallery .grid-wrap,
-#perspective-gallery [role="grid"] {
-    display: block !important;
-    text-align: center !important;
+    overflow: visible !important;
     height: auto !important;
 }
-/* Force EVERY item to be exactly 60px */
-#perspective-gallery button,
-#perspective-gallery .gallery-item,
-#perspective-gallery .thumbnail-item {
-    display: inline-block !important;
-    width: 60px !important;
-    height: 60px !important;
-    min-width: 60px !important;
-    max-width: 60px !important;
-    margin: 4px !important;
-    padding: 0 !important;
-    border-radius: 8px !important;
-    overflow: hidden !important;
-    border: 1px solid var(--border-color-primary) !important;
-    flex: none !important;
+/* Target the actual grid container Gradio uses */
+#perspective-gallery [role="grid"],
+#perspective-gallery .grid-wrap {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, 60px) !important;
+    grid-auto-rows: 60px !important;
+    gap: 8px !important;
+    justify-content: center !important;
+    overflow: visible !important;
+    padding: 10px !important;
 }
-/* Force images to fill the 60px square */
-#perspective-gallery img {
+/* Force every item to be a perfect 60px square */
+#perspective-gallery button.gallery-item {
     width: 60px !important;
     height: 60px !important;
-    max-width: 60px !important;
     min-width: 60px !important;
+    max-width: 60px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border-color-primary) !important;
+    transition: transform 0.2s ease !important;
+    background: var(--background-fill-primary) !important;
+}
+#perspective-gallery button.gallery-item:hover {
+    transform: scale(1.1) !important;
+    z-index: 10 !important;
+}
+#perspective-gallery img {
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover !important;
-    display: block !important;
 }
 
 /* Mobile Specific Tweaks (< 768px) */
@@ -303,7 +306,10 @@ with gr.Blocks(title="Banned by 21") as demo:
                         value=PERSPECTIVE_GALLERY,
                         allow_preview=False,
                         show_label=False,
-                        elem_id="perspective-gallery"
+                        elem_id="perspective-gallery",
+                        columns=None,
+                        rows=None,
+                        height="auto"
                     )
 
         # --- HOW IT WORKS ---
