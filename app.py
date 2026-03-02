@@ -171,37 +171,43 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: an
     min-height: 80px; 
 }
 
-/* Gallery Optimization - Forced Horizontal Grid */
+/* Gallery Optimization - Clean Grid */
 .gallery-container { 
     width: 100% !important; 
     padding: 15px; 
     background: var(--background-fill-secondary); 
     border-radius: 12px;
     margin-top: 10px;
-    box-sizing: border-box !important;
 }
 #perspective-gallery { 
-    height: auto !important; 
-    max-height: 250px !important; 
-    overflow-y: auto !important; 
+    background: transparent !important;
+    border: none !important;
 }
-/* Aggressively force the horizontal layout */
+/* Force the internal Gradio gallery to wrap horizontally and handle its own scroll */
+#perspective-gallery .gallery, 
 #perspective-gallery .grid-wrap, 
-#perspective-gallery > div > div {
+#perspective-gallery [role="grid"],
+#perspective-gallery > div > div > div {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: wrap !important;
-    justify-content: flex-start !important;
     gap: 8px !important;
+    justify-content: center !important;
+    height: auto !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+    padding: 5px !important;
 }
-/* Force every item to be a tiny square */
-#perspective-gallery button.gallery-item,
-#perspective-gallery .thumbnail-item {
-    width: 60px !important;
-    height: 60px !important;
-    flex: 0 0 60px !important;
-    border-radius: 8px !important;
-    overflow: hidden !important;
+/* Force tiny squares with no extra spacing */
+#perspective-gallery button.gallery-item {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    flex: 0 0 50px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 6px !important;
     border: 1px solid var(--border-color-primary) !important;
 }
 #perspective-gallery img {
@@ -291,9 +297,7 @@ with gr.Blocks(title="Banned by 21") as demo:
                     gr.Markdown("### 📸 Community Perspectives\nClick an image to see how the law affects different Canadians.")
                     gallery = gr.Gallery(
                         value=PERSPECTIVE_GALLERY,
-                        columns=[8, 12, 16], # 8 mobile, 12 tablet, 16 desktop
-                        rows=3,
-                        height="auto",
+                        columns=10, # Fallback
                         allow_preview=False,
                         show_label=False,
                         elem_id="perspective-gallery"
