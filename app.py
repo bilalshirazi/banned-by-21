@@ -295,13 +295,13 @@ with gr.Blocks(title="Banned by 21", css=custom_css) as demo:
         gr.Markdown("*Disclaimer: This tool is for informational and advocacy purposes. Created by Bilal Shirazi (bilalshirazi.com)*")
 
     # --- 5. Event Handlers ---
-    start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs)
+    start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs, api_name=False)
     
     def on_select(evt: gr.SelectData):
         return evt.value['image']['path'], gr.Tabs(selected="upload_tab")
 
-    gallery.select(fn=on_select, outputs=[image_input, input_sources])
-    submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=status_output)
+    gallery.select(fn=on_select, outputs=[image_input, input_sources], api_name=False)
+    submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=status_output, api_name=False)
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", ssr=False, show_api=False)
+    demo.launch(server_name="0.0.0.0")
