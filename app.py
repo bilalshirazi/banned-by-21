@@ -211,15 +211,18 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: an
 .subtext-small { 
     font-size: 0.85em !important; 
     color: var(--body-text-color-subdued); 
-    margin-top: -10px !important; 
-    margin-bottom: 10px !important; 
-    text-align: center; 
+    margin-top: 5px !important; 
+    margin-bottom: 15px !important; 
+    text-align: left; 
     display: block; 
     line-height: 1.4 !important; 
     width: 100% !important; 
-    padding: 0 15px !important;
     box-sizing: border-box !important;
     overflow-wrap: break-word !important;
+}
+/* Center subtext only on mobile */
+@media (max-width: 768px) {
+    .subtext-small { text-align: center !important; }
 }
 """
 
