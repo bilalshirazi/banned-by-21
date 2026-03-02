@@ -8,6 +8,7 @@ import time
 import base64
 import json
 import logging
+from packaging import version
 
 # Suppress transformers loading warnings
 logging.getLogger("transformers").setLevel(logging.ERROR)
@@ -207,7 +208,17 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
 }
 """
 
-with gr.Blocks(title="Banned by 21", css=custom_css) as demo:
+# Determine where to pass 'css' based on Gradio version
+is_v6 = version.parse(gr.__version__) >= version.parse("6.0.0")
+blocks_kwargs = {"title": "Banned by 21"}
+launch_kwargs = {"server_name": "0.0.0.0"}
+
+if is_v6:
+    launch_kwargs["css"] = custom_css
+else:
+    blocks_kwargs["css"] = custom_css
+
+with gr.Blocks(**blocks_kwargs) as demo:
     with gr.Column(elem_classes="main-wrap"):
         gr.HTML(f"""
             <div class="hero-section">
@@ -304,4 +315,4 @@ with gr.Blocks(title="Banned by 21", css=custom_css) as demo:
     submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=status_output, api_name=False)
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0")
+    demo.launch(**launch_kwargs)
