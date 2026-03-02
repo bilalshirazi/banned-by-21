@@ -248,7 +248,7 @@ with gr.Blocks(title="Banned by 21") as demo:
                     gr.Markdown("### 📸 Community Perspectives\nClick an image to see how the law affects different Canadians.")
                     gallery = gr.Gallery(
                         value=PERSPECTIVE_GALLERY,
-                        columns=[3, 4, 6], # 3 mobile, 4 tablet, 6 desktop
+                        columns=[6, 8, 12], # 6 mobile, 8 tablet, 12 desktop
                         rows=2,
                         height="auto",
                         allow_preview=False,
