@@ -208,7 +208,19 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: an
         margin-bottom: 15px !important;
     }
 }
-.subtext-small { font-size: 0.85em !important; color: var(--body-text-color-subdued); margin-top: -10px !important; margin-bottom: 10px !important; text-align: center; display: block; }
+.subtext-small { 
+    font-size: 0.85em !important; 
+    color: var(--body-text-color-subdued); 
+    margin-top: -10px !important; 
+    margin-bottom: 10px !important; 
+    text-align: center; 
+    display: block; 
+    line-height: 1.4 !important; 
+    width: 100% !important; 
+    padding: 0 15px !important;
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+}
 """
 
 with gr.Blocks(title="Banned by 21") as demo:
