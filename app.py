@@ -171,7 +171,7 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: an
     min-height: 80px; 
 }
 
-/* Gallery Optimization - Tiny Thumbnails */
+/* Gallery Optimization - Forced Horizontal Grid */
 .gallery-container { 
     width: 100% !important; 
     padding: 15px; 
@@ -182,21 +182,27 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: an
 }
 #perspective-gallery { 
     height: auto !important; 
-    max-height: 250px; 
-    overflow-y: auto; 
+    max-height: 250px !important; 
+    overflow-y: auto !important; 
 }
-#perspective-gallery .grid-wrap {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)) !important;
+/* Aggressively force the horizontal layout */
+#perspective-gallery .grid-wrap, 
+#perspective-gallery > div > div {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
     gap: 8px !important;
 }
-#perspective-gallery button.gallery-item {
-    width: 50px !important;
-    height: 50px !important;
-    aspect-ratio: 1/1 !important;
-    flex: none !important;
+/* Force every item to be a tiny square */
+#perspective-gallery button.gallery-item,
+#perspective-gallery .thumbnail-item {
+    width: 60px !important;
+    height: 60px !important;
+    flex: 0 0 60px !important;
     border-radius: 8px !important;
     overflow: hidden !important;
+    border: 1px solid var(--border-color-primary) !important;
 }
 #perspective-gallery img {
     width: 100% !important;
