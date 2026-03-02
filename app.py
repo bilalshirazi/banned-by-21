@@ -171,7 +171,7 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: an
     min-height: 80px; 
 }
 
-/* Gallery Optimization */
+/* Gallery Optimization - Tiny Thumbnails */
 .gallery-container { 
     width: 100% !important; 
     padding: 15px; 
@@ -180,7 +180,29 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: an
     margin-top: 10px;
     box-sizing: border-box !important;
 }
-#perspective-gallery { height: auto !important; max-height: 400px; overflow-y: auto; }
+#perspective-gallery { 
+    height: auto !important; 
+    max-height: 250px; 
+    overflow-y: auto; 
+}
+#perspective-gallery .grid-wrap {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)) !important;
+    gap: 8px !important;
+}
+#perspective-gallery button.gallery-item {
+    width: 50px !important;
+    height: 50px !important;
+    aspect-ratio: 1/1 !important;
+    flex: none !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+#perspective-gallery img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
 
 /* Mobile Specific Tweaks (< 768px) */
 @media (max-width: 768px) {
