@@ -207,7 +207,7 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
 }
 """
 
-with gr.Blocks(title="Banned by 21") as demo:
+with gr.Blocks(title="Banned by 21", css=custom_css) as demo:
     with gr.Column(elem_classes="main-wrap"):
         gr.HTML(f"""
             <div class="hero-section">
@@ -304,4 +304,4 @@ with gr.Blocks(title="Banned by 21") as demo:
     submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=status_output)
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", css=custom_css)
+    demo.launch(server_name="0.0.0.0")
