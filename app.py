@@ -102,167 +102,82 @@ PERSPECTIVE_GALLERY = sorted(glob.glob(os.path.join(DATA_DIR, "*.png")))
 
 # --- 5. UI Layout ---
 custom_css = """
-/* Mobile Expert Reset */
+/* Expert UX Reset */
 * { box-sizing: border-box !important; }
-body { overflow-x: hidden !important; width: 100vw; }
+body { overflow-x: hidden !important; width: 100vw; line-height: 1.4; }
 
-/* Core Container & Typography */
 .gradio-container { 
-    max-width: 100% !important; 
+    max-width: 1200px !important; 
     margin: 0 auto !important; 
-    padding: 10px !important; 
+    padding: 20px !important; 
 }
-h1 { 
-    font-size: 2.2em !important; 
-    text-align: center; 
-    margin-bottom: 20px !important; 
+
+h1, h2, h3 { 
     overflow-wrap: anywhere !important;
     word-break: break-word !important;
+    letter-spacing: -0.01em !important;
 }
-h2 { font-size: 1.8em !important; margin-top: 15px !important; overflow-wrap: anywhere !important; }
+h1 { font-size: 2.5em !important; text-align: center; margin-bottom: 30px !important; line-height: 1.2 !important; }
+h2 { font-size: 2.0em !important; margin-top: 20px !important; line-height: 1.3 !important; }
 
-/* Dashboard / Stats Box */
 .stat-box { 
     background: var(--background-fill-secondary); 
-    padding: 24px; 
-    border-radius: 12px; 
-    text-align: center; 
-    border: 1px solid var(--border-color-primary); 
-    margin-bottom: 16px; 
-    width: 100% !important;
-    box-sizing: border-box !important;
+    padding: 24px; border-radius: 12px; text-align: center; 
+    border: 1px solid var(--border-color-primary); margin-bottom: 16px; 
 }
-.stat-box h2 { font-size: 2.8em !important; font-weight: 900 !important; color: #ef4444 !important; margin: 0 !important; line-height: 1; }
-.stat-box p { font-weight: 600 !important; font-size: 1.1em !important; margin: 8px 0 0 0 !important; }
+.stat-box h2 { font-size: 2.8em !important; color: #ef4444 !important; margin: 0 !important; }
 
-/* Input Groups & Spacing */
 .input-group { 
     background: var(--background-fill-secondary); 
-    padding: 20px; 
-    border-radius: 12px; 
+    padding: 25px; border-radius: 12px; 
     border: 1px solid var(--border-color-primary); 
-    margin-bottom: 20px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
+    margin-bottom: 25px !important;
 }
 
-/* Action / Donation Cards */
-.action-card { 
-    background: var(--background-fill-secondary); 
-    padding: 24px; 
-    border-radius: 12px; 
-    border: 1px solid var(--border-color-primary); 
-    text-align: center; 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-.action-card img { max-width: 100% !important; margin-bottom: 15px !important; }
-
-/* Eligibility Checker Results */
 .result-display { 
-    padding: 20px; 
-    border-radius: 12px; 
+    padding: 20px; border-radius: 12px; 
     background: var(--background-fill-primary); 
     border: 2px solid var(--border-color-primary); 
-    margin-top: 15px;
-    min-height: 80px; 
+    margin-top: 15px; min-height: 80px; 
 }
 
-/* Gallery Optimization - Expert Grid */
 .gallery-container { 
-    width: 100% !important; 
-    padding: 15px; 
+    width: 100% !important; padding: 20px; 
     background: var(--background-fill-secondary); 
-    border-radius: 12px;
-    margin-top: 10px;
-    box-sizing: border-box !important;
+    border-radius: 12px; margin-top: 10px;
 }
-/* Remove all internal scrollbars and borders from Gradio's wrapper */
-#perspective-gallery, 
-#perspective-gallery > .gallery,
-#perspective-gallery > .gallery > div {
-    background: transparent !important;
-    border: none !important;
-    overflow: visible !important;
-    height: auto !important;
-}
-/* Target the actual grid container Gradio uses */
-#perspective-gallery [role="grid"],
-#perspective-gallery .grid-wrap {
+
+/* Expert Grid Fix */
+#perspective-gallery [role="grid"], #perspective-gallery .grid-wrap {
     display: grid !important;
-    grid-template-columns: repeat(auto-fill, 60px) !important;
-    grid-auto-rows: 60px !important;
-    gap: 8px !important;
+    grid-template-columns: repeat(auto-fit, 60px) !important;
+    gap: 12px !important;
     justify-content: center !important;
     overflow: visible !important;
-    padding: 10px !important;
 }
-/* Force every item to be a perfect 60px square */
 #perspective-gallery button.gallery-item {
-    width: 60px !important;
-    height: 60px !important;
-    min-width: 60px !important;
-    max-width: 60px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border-radius: 8px !important;
+    width: 60px !important; height: 60px !important;
+    padding: 0 !important; border-radius: 8px !important;
     border: 1px solid var(--border-color-primary) !important;
-    transition: transform 0.2s ease !important;
-    background: var(--background-fill-primary) !important;
 }
-#perspective-gallery button.gallery-item:hover {
-    transform: scale(1.1) !important;
-    z-index: 10 !important;
+#perspective-gallery img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+
+.video-container {
+    position: relative; padding-bottom: 56.25%; height: 0;
+    overflow: hidden; border-radius: 12px; margin-bottom: 24px;
 }
-#perspective-gallery img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
+.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+.subtext-small { 
+    font-size: 0.9em !important; color: var(--body-text-color-subdued); 
+    margin-top: 5px !important; margin-bottom: 15px !important; 
+    text-align: left; display: block; 
 }
 
-/* Mobile Specific Tweaks (< 768px) */
 @media (max-width: 768px) {
-    .gradio-container { padding: 8px !important; }
-    h1 { font-size: 1.5em !important; }
-    h2 { font-size: 1.3em !important; }
-    .stat-box h2 { font-size: 2.2em !important; }
-    .stat-box { padding: 16px; }
-    .action-card { padding: 16px; margin-bottom: 12px; }
-    .input-group { padding: 15px; }
-    
-    /* Force stacking for ANY row on mobile */
-    .mobile-stack, .mobile-stack > .row { 
-        display: flex !important;
-        flex-direction: column !important; 
-        width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    .mobile-stack > .column { 
-        width: 100% !important; 
-        max-width: 100% !important; 
-        min-width: 100% !important; 
-        padding: 0 !important;
-        margin-bottom: 15px !important;
-    }
-}
-.subtext-small { 
-    font-size: 0.85em !important; 
-    color: var(--body-text-color-subdued); 
-    margin-top: 5px !important; 
-    margin-bottom: 15px !important; 
-    text-align: left; 
-    display: block; 
-    line-height: 1.4 !important; 
-    width: 100% !important; 
-    box-sizing: border-box !important;
-    overflow-wrap: break-word !important;
-}
-/* Center subtext only on mobile */
-@media (max-width: 768px) {
+    .gradio-container { padding: 10px !important; }
+    h1 { font-size: 1.8em !important; }
+    .mobile-stack { flex-direction: column !important; }
     .subtext-small { text-align: center !important; }
 }
 """
@@ -271,7 +186,6 @@ with gr.Blocks(title="Banned by 21") as demo:
     gr.Markdown("# Banned by 21: Quebec Employment Eligibility")
     
     with gr.Tabs() as tabs:
-        # --- HOME ---
         with gr.Tab("Home", id="home"):
             with gr.Row(elem_classes="mobile-stack"):
                 with gr.Column(scale=2):
@@ -281,25 +195,20 @@ with gr.Blocks(title="Banned by 21") as demo:
                 with gr.Column(scale=1):
                     gr.HTML('<div class="stat-box"><h2>71%</h2><p>consider leaving Quebec.</p></div><div class="stat-box"><h2>88%</h2><p>felt less welcoming since 2019.</p></div>')
             
-        # --- ELIGIBILITY CHECKER ---
         with gr.Tab("Eligibility Checker", id="checker"):
-            with gr.Column(elem_classes="mobile-stack"):
-                # Step 1: Image Input
+            with gr.Column():
                 with gr.Group(elem_classes="input-group"):
                     gr.Markdown("### 1. Photo Input")
                     gr.Markdown("*(We check for religious symbols like hijabs, turbans, crosses, etc., or face coverings)*", elem_classes="subtext-small")
                     image_input = gr.Image(label="Upload or Use Webcam", type="pil", height=350, sources=["upload", "webcam"])
                 
-                # Step 2: Job & Status (Now directly below image for better mobile UX)
                 with gr.Group(elem_classes="input-group"):
                     gr.Markdown("### 2. Job & Status")
                     job_dropdown = gr.Dropdown(label="Select Your Profession", choices=RESTRICTED_JOBS, value=RESTRICTED_JOBS[0])
                     submit_btn = gr.Button("Check My Eligibility", variant="primary", size="lg")
-                    
                     with gr.Group(elem_classes="result-display"):
                         status_output = gr.Markdown("Waiting for input...")
 
-                # Step 3: Gallery (Moved to bottom as it's secondary to the check)
                 with gr.Column(elem_classes="gallery-container"):
                     gr.Markdown("### 📸 Community Perspectives\nClick an image to see how the law affects different Canadians.")
                     gallery = gr.Gallery(
@@ -307,12 +216,9 @@ with gr.Blocks(title="Banned by 21") as demo:
                         allow_preview=False,
                         show_label=False,
                         elem_id="perspective-gallery",
-                        columns=None,
-                        rows=None,
-                        height="auto"
+                        columns=None, rows=None, height="auto"
                     )
 
-        # --- HOW IT WORKS ---
         with gr.Tab("How it Works", id="how_it_works"):
             gr.Markdown("## How the Determination is Made")
             with gr.Row(elem_classes="mobile-stack"):
@@ -323,12 +229,10 @@ with gr.Blocks(title="Banned by 21") as demo:
                     gr.Markdown("### ⚖️ 2. Legislative Match\nThe detected items are then compared against the **Restricted Jobs** list. If you wear a symbol and work in a covered role (like teaching), the law deems you 'Ineligible'.")
                     gr.Markdown("### 🔒 3. Privacy First\n**No data is stored.** Your image is processed in your browser's memory and deleted the moment you close the tab.")
 
-        # --- HUMAN IMPACT ---
         with gr.Tab("Human Impact", id="human_impact"):
             gr.Markdown("## Real Stories: The Human Cost\nThis video highlights the stories of women who have already lost their jobs following the expansion of the law in 2025.")
             gr.HTML('<div class="video-container"><iframe src="https://www.youtube.com/embed/urcZnCopNAc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>')
 
-        # --- ABOUT THE LAWS ---
         with gr.Tab("About the Laws", id="laws"):
             gr.HTML(get_img_html("banned-by-21-at-work.png", height="350px"))
             with gr.Row(elem_classes="mobile-stack"):
@@ -338,10 +242,9 @@ with gr.Blocks(title="Banned by 21") as demo:
                     gr.Markdown("### Key Terms")
                     gr.HTML("<div class='glossary-box'><strong>Notwithstanding Clause:</strong> Section 33, allowing governments to override Charter rights.</div><div class='glossary-box'><strong>Laicity:</strong> State neutrality toward all religions.</div>")
 
-    # --- PERMANENT ADVOCACY SECTION ---
     gr.Markdown("---")
     gr.Markdown("## Defend Civil Liberties: Take Action", elem_classes="cta-header")
-    gr.Markdown("The NCCM and CCLA have partnered to take the civil liberties battle to the Supreme Court of Canada.")
+    gr.Markdown("The NCCM and CCLA have partnered to take the civil liberties battle to the Supreme Court of Canada.", elem_classes="cta-subtext")
     
     with gr.Row(elem_classes="mobile-stack"):
         with gr.Column(elem_classes="action-card"):
@@ -354,18 +257,14 @@ with gr.Blocks(title="Banned by 21") as demo:
             gr.Markdown("**Canadian Civil Liberties Association**\n\nActing as a vigilant watchdog for rights and freedoms across Canada.")
             gr.Button("Donate to CCLA", link="https://ccla.org/donate/", variant="primary")
 
-    # Event Wiring
     start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs, api_name=False)
     
-    # DEFENSIVE SELECT HANDLER: Fixes the 'NoneType' and 'AttributeError' bugs
     def on_select(evt: gr.SelectData):
         if evt is not None and hasattr(evt, 'value'):
-            # Return the path of the selected image
             return evt.value['image']['path']
         return None
 
     gallery.select(fn=on_select, outputs=image_input, api_name=False)
-    
     submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=[status_output], show_progress="full", api_name=False)
 
     gr.Markdown("---")
