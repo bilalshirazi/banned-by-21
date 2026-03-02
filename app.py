@@ -44,7 +44,7 @@ def get_img_html(filename, height="auto", width="auto", max_height="none"):
     if os.path.exists(path):
         with open(path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
-            return f'<img src="data:image/png;base64,{data}" style="height: {height}; width: {width}; max-height: {max_height}; object-fit: contain; margin: 0 auto; display: block; border-radius: 12px;">'
+            return f'<img src="data:image/png;base64,{data}" style="height: {height}; width: {width}; max-width: 100%; max-height: {max_height}; object-fit: contain; margin: 0 auto; display: block; border-radius: 12px;">'
     return ""
 
 # --- 3. Core Logic Functions ---
@@ -102,10 +102,25 @@ PERSPECTIVE_GALLERY = sorted(glob.glob(os.path.join(DATA_DIR, "*.png")))
 
 # --- 5. UI Layout ---
 custom_css = """
+/* Mobile Expert Reset */
+* { box-sizing: border-box !important; }
+body { overflow-x: hidden !important; width: 100vw; }
+
 /* Core Container & Typography */
-.gradio-container { max-width: 1200px !important; margin: 0 auto !important; padding: 10px !important; }
-h1 { font-size: 2.2em !important; text-align: center; margin-bottom: 20px !important; }
-h2 { font-size: 1.8em !important; margin-top: 15px !important; }
+.gradio-container { 
+    max-width: 100% !important; 
+    margin: 0 auto !important; 
+    padding: 10px !important; 
+    overflow-x: hidden !important; 
+}
+h1 { 
+    font-size: 2.2em !important; 
+    text-align: center; 
+    margin-bottom: 20px !important; 
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+h2 { font-size: 1.8em !important; margin-top: 15px !important; word-wrap: break-word !important; }
 
 /* Dashboard / Stats Box */
 .stat-box { 
@@ -115,9 +130,8 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; }
     text-align: center; 
     border: 1px solid var(--border-color-primary); 
     margin-bottom: 16px; 
-    transition: transform 0.2s ease;
+    width: 100% !important;
 }
-.stat-box:hover { transform: translateY(-2px); }
 .stat-box h2 { font-size: 2.8em !important; font-weight: 900 !important; color: #ef4444 !important; margin: 0 !important; line-height: 1; }
 .stat-box p { font-weight: 600 !important; font-size: 1.1em !important; margin: 8px 0 0 0 !important; }
 
@@ -131,23 +145,13 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; }
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 100% !important;
 }
-.action-card img { margin-bottom: 15px !important; }
+.action-card img { max-width: 100% !important; margin-bottom: 15px !important; }
 
-/* Eligibility Checker Results */
-.result-display { padding: 20px; border-radius: 12px; background: var(--background-fill-secondary); border: 2px solid var(--border-color-primary); min-height: 100px; }
-
-/* Gallery Optimization */
-.gallery-container { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color-primary); margin-top: 20px; }
-
-/* Glossary Boxes */
-.glossary-box { 
-    background: var(--background-fill-secondary); 
-    padding: 15px; 
-    border-radius: 8px; 
-    border-left: 4px solid var(--color-accent); 
-    margin-bottom: 15px; 
-}
+/* Compatibility Gallery */
+.gallery-container { width: 100% !important; overflow-x: hidden !important; }
+.gr-samples .gallery { width: 100% !important; }
 
 /* YouTube Responsive Wrapper */
 .video-container {
@@ -157,6 +161,7 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; }
     overflow: hidden;
     border-radius: 12px;
     margin-bottom: 24px;
+    width: 100% !important;
 }
 .video-container iframe {
     position: absolute;
@@ -168,25 +173,26 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; }
 
 /* Mobile Specific Tweaks (< 768px) */
 @media (max-width: 768px) {
-    .gradio-container { padding: 15px !important; }
+    .gradio-container { padding: 8px !important; }
+    h1 { font-size: 1.5em !important; }
+    h2 { font-size: 1.3em !important; }
     .stat-box h2 { font-size: 2.2em !important; }
-    h1 { font-size: 1.6em !important; }
-    h2 { font-size: 1.4em !important; }
-    h3 { font-size: 1.2em !important; }
-    .action-card { margin-bottom: 15px; }
     .stat-box { padding: 16px; }
+    .action-card { padding: 16px; margin-bottom: 12px; }
     
-    /* Force stacking for mobile-stack rows */
+    /* Force stacking for ANY row on mobile */
     .mobile-stack { 
+        display: flex !important;
         flex-direction: column !important; 
     }
     .mobile-stack > .column { 
         width: 100% !important; 
         max-width: 100% !important; 
         min-width: 100% !important; 
+        margin-bottom: 15px !important;
     }
 }
-.subtext-small { font-size: 0.85em !important; color: var(--body-text-color-subdued); margin-top: -10px !important; margin-bottom: 10px !important; }
+.subtext-small { font-size: 0.85em !important; color: var(--body-text-color-subdued); margin-top: -10px !important; margin-bottom: 10px !important; text-align: center; display: block; }
 """
 
 with gr.Blocks(title="Banned by 21") as demo:
@@ -209,7 +215,7 @@ with gr.Blocks(title="Banned by 21") as demo:
                 with gr.Column(scale=1):
                     gr.Markdown("### 1. Photo Input")
                     gr.Markdown("*(We check for religious symbols like hijabs, turbans, crosses, etc., or face coverings)*", elem_classes="subtext-small")
-                    image_input = gr.Image(label="Upload Photo", type="pil", height=400, sources=["upload"])
+                    image_input = gr.Image(label="Upload or Use Webcam", type="pil", height=400, sources=["upload", "webcam"])
                     
                     with gr.Column(elem_classes="gallery-container"):
                         gr.Markdown("### 📸 Community Perspectives\nClick an image to see how the law affects different Canadians.")
