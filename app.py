@@ -175,10 +175,13 @@ h2 { font-size: 2.0em !important; margin-top: 20px !important; line-height: 1.3 
 }
 
 @media (max-width: 768px) {
-    .gradio-container { padding: 10px !important; }
+    .gradio-container { padding: 12px !important; }
     h1 { font-size: 1.8em !important; }
+    h2 { font-size: 1.5em !important; }
+    .input-group { padding: 15px !important; margin-bottom: 15px !important; }
     .mobile-stack { flex-direction: column !important; }
-    .subtext-small { text-align: center !important; }
+    .subtext-small { text-align: center !important; font-size: 0.8em !important; margin-bottom: 10px !important; }
+    #submit-check-btn { width: 100% !important; height: 60px !important; font-size: 1.1em !important; }
 }
 """
 
@@ -200,14 +203,30 @@ with gr.Blocks(title="Banned by 21") as demo:
                 with gr.Group(elem_classes="input-group"):
                     gr.Markdown("### 1. Photo Input")
                     gr.Markdown("*(We check for religious symbols like hijabs, turbans, crosses, etc., or face coverings)*", elem_classes="subtext-small")
-                    image_input = gr.Image(label="Upload or Use Webcam", type="pil", height=350, sources=["upload", "webcam"])
+                    image_input = gr.Image(
+                        label="Upload or Use Webcam", 
+                        type="pil", 
+                        height=350, 
+                        sources=["upload", "webcam"],
+                        elem_id="image-input-field"
+                    )
                 
                 with gr.Group(elem_classes="input-group"):
                     gr.Markdown("### 2. Job & Status")
-                    job_dropdown = gr.Dropdown(label="Select Your Profession", choices=RESTRICTED_JOBS, value=RESTRICTED_JOBS[0])
-                    submit_btn = gr.Button("Check My Eligibility", variant="primary", size="lg")
+                    job_dropdown = gr.Dropdown(
+                        label="Select Your Profession", 
+                        choices=RESTRICTED_JOBS, 
+                        value=RESTRICTED_JOBS[0],
+                        elem_id="job-selector-field"
+                    )
+                    submit_btn = gr.Button(
+                        "Check My Eligibility", 
+                        variant="primary", 
+                        size="lg",
+                        elem_id="submit-check-btn"
+                    )
                     with gr.Group(elem_classes="result-display"):
-                        status_output = gr.Markdown("Waiting for input...")
+                        status_output = gr.Markdown("Waiting for input...", elem_id="status-output-text")
 
                 with gr.Column(elem_classes="gallery-container"):
                     gr.Markdown("### 📸 Community Perspectives\nClick an image to see how the law affects different Canadians.")
