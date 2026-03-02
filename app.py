@@ -102,14 +102,78 @@ PERSPECTIVE_GALLERY = sorted(glob.glob(os.path.join(DATA_DIR, "*.png")))
 
 # --- 5. UI Layout ---
 custom_css = """
-.gradio-container { max-width: 1200px !important; margin: 0 auto !important; }
-.stat-box { background: var(--background-fill-secondary); padding: 24px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color-primary); margin-bottom: 16px; }
-.stat-box h2 { font-size: 2.5em !important; font-weight: 900 !important; color: #ef4444 !important; margin: 0 !important; }
-.stat-box p { font-weight: 600 !important; font-size: 1.1em !important; margin: 5px 0 0 0 !important; }
-.action-card { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color-primary); text-align: center; margin-bottom: 15px; }
+/* Core Container & Typography */
+.gradio-container { max-width: 1200px !important; margin: 0 auto !important; padding: 10px !important; }
+h1 { font-size: 2.2em !important; text-align: center; margin-bottom: 20px !important; }
+h2 { font-size: 1.8em !important; margin-top: 15px !important; }
+
+/* Dashboard / Stats Box */
+.stat-box { 
+    background: var(--background-fill-secondary); 
+    padding: 24px; 
+    border-radius: 12px; 
+    text-align: center; 
+    border: 1px solid var(--border-color-primary); 
+    margin-bottom: 16px; 
+    transition: transform 0.2s ease;
+}
+.stat-box:hover { transform: translateY(-2px); }
+.stat-box h2 { font-size: 2.8em !important; font-weight: 900 !important; color: #ef4444 !important; margin: 0 !important; line-height: 1; }
+.stat-box p { font-weight: 600 !important; font-size: 1.1em !important; margin: 8px 0 0 0 !important; }
+
+/* Action / Donation Cards */
+.action-card { 
+    background: var(--background-fill-secondary); 
+    padding: 24px; 
+    border-radius: 12px; 
+    border: 1px solid var(--border-color-primary); 
+    text-align: center; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.action-card img { margin-bottom: 15px !important; }
+
+/* Eligibility Checker Results */
 .result-display { padding: 20px; border-radius: 12px; background: var(--background-fill-secondary); border: 2px solid var(--border-color-primary); min-height: 100px; }
-.glossary-box { background: var(--background-fill-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-accent); margin-bottom: 10px; }
+
+/* Gallery Optimization */
 .gallery-container { background: var(--background-fill-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color-primary); margin-top: 20px; }
+
+/* Glossary Boxes */
+.glossary-box { 
+    background: var(--background-fill-secondary); 
+    padding: 15px; 
+    border-radius: 8px; 
+    border-left: 4px solid var(--color-accent); 
+    margin-bottom: 15px; 
+}
+
+/* YouTube Responsive Wrapper */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Mobile Specific Tweaks (< 768px) */
+@media (max-width: 768px) {
+    .stat-box h2 { font-size: 2.2em !important; }
+    h1 { font-size: 1.6em !important; }
+    .action-card { margin-bottom: 15px; }
+    .gradio-container { padding: 5px !important; }
+    .stat-box { padding: 16px; }
+}
 """
 
 with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as demo:
@@ -154,7 +218,7 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
         # --- HUMAN IMPACT ---
         with gr.Tab("Human Impact", id="human_impact"):
             gr.Markdown("## Real Stories: The Human Cost\nThis video highlights the stories of women who have already lost their jobs following the expansion of the law in 2025.")
-            gr.HTML('<div style="margin-bottom: 24px; border-radius: 12px; overflow: hidden;"><iframe width="100%" height="500" src="https://www.youtube.com/embed/urcZnCopNAc" frameborder="0" allowfullscreen></iframe></div>')
+            gr.HTML('<div class="video-container"><iframe src="https://www.youtube.com/embed/urcZnCopNAc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>')
 
         # --- ABOUT THE LAWS ---
         with gr.Tab("About the Laws", id="laws"):
