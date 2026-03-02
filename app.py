@@ -186,6 +186,7 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; }
         min-width: 100% !important; 
     }
 }
+.subtext-small { font-size: 0.85em !important; color: var(--body-text-color-subdued); margin-top: -10px !important; margin-bottom: 10px !important; }
 """
 
 with gr.Blocks(title="Banned by 21") as demo:
@@ -207,6 +208,7 @@ with gr.Blocks(title="Banned by 21") as demo:
             with gr.Row(elem_classes="mobile-stack"):
                 with gr.Column(scale=1):
                     gr.Markdown("### 1. Photo Input")
+                    gr.Markdown("*(We check for religious symbols like hijabs, turbans, crosses, etc., or face coverings)*", elem_classes="subtext-small")
                     image_input = gr.Image(label="Upload Photo", type="pil", height=400, sources=["upload"])
                     
                     with gr.Column(elem_classes="gallery-container"):
@@ -226,6 +228,17 @@ with gr.Blocks(title="Banned by 21") as demo:
                     submit_btn = gr.Button("Check My Status", variant="primary")
                     with gr.Group(elem_classes="result-display"):
                         status_output = gr.Markdown("Waiting for input...")
+
+        # --- HOW IT WORKS ---
+        with gr.Tab("How it Works", id="how_it_works"):
+            gr.Markdown("## How the Determination is Made")
+            with gr.Row(elem_classes="mobile-stack"):
+                with gr.Column():
+                    gr.Markdown("### 🛡️ 1. AI Detection (CLIP)\nThe app uses a computer vision model to scan the image for specific religious symbols and face coverings prohibited under Bill 21 and Bill 94.")
+                    gr.Markdown("**What we look for:**\n* Religious headwear (Hijab, Turban, Kippah, etc.)\n* Religious jewelry (Crosses, Kara, etc.)\n* Face coverings (Niqab, Burqa)\n* Religious markings (Bindi, Tilakah)")
+                with gr.Column():
+                    gr.Markdown("### ⚖️ 2. Legislative Match\nThe detected items are then compared against the **Restricted Jobs** list. If you wear a symbol and work in a covered role (like teaching), the law deems you 'Ineligible'.")
+                    gr.Markdown("### 🔒 3. Privacy First\n**No data is stored.** Your image is processed in your browser's memory and deleted the moment you close the tab.")
 
         # --- HUMAN IMPACT ---
         with gr.Tab("Human Impact", id="human_impact"):
