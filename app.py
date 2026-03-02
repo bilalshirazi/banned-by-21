@@ -168,11 +168,23 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; }
 
 /* Mobile Specific Tweaks (< 768px) */
 @media (max-width: 768px) {
+    .gradio-container { padding: 15px !important; }
     .stat-box h2 { font-size: 2.2em !important; }
     h1 { font-size: 1.6em !important; }
+    h2 { font-size: 1.4em !important; }
+    h3 { font-size: 1.2em !important; }
     .action-card { margin-bottom: 15px; }
-    .gradio-container { padding: 5px !important; }
     .stat-box { padding: 16px; }
+    
+    /* Force stacking for mobile-stack rows */
+    .mobile-stack { 
+        flex-direction: column !important; 
+    }
+    .mobile-stack > .column { 
+        width: 100% !important; 
+        max-width: 100% !important; 
+        min-width: 100% !important; 
+    }
 }
 """
 
@@ -182,26 +194,26 @@ with gr.Blocks(title="Banned by 21") as demo:
     with gr.Tabs() as tabs:
         # --- HOME ---
         with gr.Tab("Home", id="home"):
-            with gr.Row():
+            with gr.Row(elem_classes="mobile-stack"):
                 with gr.Column(scale=2):
                     gr.HTML(get_img_html("banned-by-21.png", max_height="350px"))
-                    gr.Markdown("## The Fight for Civil Liberties in Quebec\nIn 2019, Quebec passed **Bill 21**, followed by the expansion of **Bill 94** in 2025. These laws prohibit public sector employees from wearing religious symbols while exercising their functions.")
+                    gr.Markdown("## The Fight for Civil Liberties\nIn 2019, Quebec passed **Bill 21**, followed by the expansion of **Bill 94** in 2025. These laws prohibit public sector employees from wearing religious symbols while exercising their functions.")
                     start_btn = gr.Button("Enter Eligibility Checker", variant="primary")
                 with gr.Column(scale=1):
                     gr.HTML('<div class="stat-box"><h2>71%</h2><p>consider leaving Quebec.</p></div><div class="stat-box"><h2>88%</h2><p>felt less welcoming since 2019.</p></div>')
             
         # --- ELIGIBILITY CHECKER ---
         with gr.Tab("Eligibility Checker", id="checker"):
-            with gr.Row():
+            with gr.Row(elem_classes="mobile-stack"):
                 with gr.Column(scale=1):
                     gr.Markdown("### 1. Photo Input")
-                    image_input = gr.Image(label="Upload or Use Webcam", type="pil", height=400, sources=["upload", "webcam"])
+                    image_input = gr.Image(label="Upload Photo", type="pil", height=400, sources=["upload"])
                     
                     with gr.Column(elem_classes="gallery-container"):
-                        gr.Markdown("### 📸 Community Perspectives\nClick a sample image below to see how the law affects different Canadians.")
+                        gr.Markdown("### 📸 Community Perspectives\nClick an image to see how the law affects different Canadians.")
                         gallery = gr.Gallery(
                             value=PERSPECTIVE_GALLERY,
-                            columns=6,
+                            columns=[3, 6], # 3 columns on mobile, 6 on desktop
                             rows=4,
                             height="auto",
                             allow_preview=False,
@@ -223,7 +235,7 @@ with gr.Blocks(title="Banned by 21") as demo:
         # --- ABOUT THE LAWS ---
         with gr.Tab("About the Laws", id="laws"):
             gr.HTML(get_img_html("banned-by-21-at-work.png", height="350px"))
-            with gr.Row():
+            with gr.Row(elem_classes="mobile-stack"):
                 with gr.Column():
                     gr.Markdown("### The Legislation\n**Bill 21:** Prohibits symbols for authority figures.\n**Bill 94:** Expands ban to all school staff.\n\n### Legal Resources\n* [Bill 21 Official Text](https://www.legisquebec.gouv.qc.ca/en/document/cs/L-0.3)\n* [Bill 94 Official Text](https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-94-43-1.html)\n* [Canadian Charter of Rights](https://www.canada.ca/en/canadian-heritage/services/how-rights-protected/guide-canadian-charter-rights-freedoms.html)")
                 with gr.Column():
@@ -235,7 +247,7 @@ with gr.Blocks(title="Banned by 21") as demo:
     gr.Markdown("## Defend Civil Liberties: Take Action", elem_classes="cta-header")
     gr.Markdown("The NCCM and CCLA have partnered to take the civil liberties battle to the Supreme Court of Canada.")
     
-    with gr.Row():
+    with gr.Row(elem_classes="mobile-stack"):
         with gr.Column(elem_classes="action-card"):
             gr.HTML(get_img_html("nccm-logo.png", height="50px"))
             gr.Markdown("**National Council of Canadian Muslims**\n\nChallenging Quebec's secularism laws to defend the rights of public sector employees.")
