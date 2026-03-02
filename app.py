@@ -236,7 +236,7 @@ with gr.Blocks(title="Banned by 21", css=custom_css) as demo:
                                     image_input = gr.Image(label="Identify Your Appearance", type="pil", sources=["upload", "webcam"])
                                 
                                 with gr.Tab("Examples", id="gallery_tab"):
-                                    gallery = gr.Gallery(value=PERSPECTIVE_GALLERY, columns=6, rows=4, height="auto", allow_preview=False, show_label=False)
+                                    gallery = gr.Gallery(value=PERSPECTIVE_GALLERY, columns=6, rows=4, show_label=False)
                     
                     with gr.Column(scale=1):
                         gr.Markdown("### 2. Check Status")
@@ -304,4 +304,4 @@ with gr.Blocks(title="Banned by 21", css=custom_css) as demo:
     submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=status_output)
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0")
+    demo.launch(server_name="0.0.0.0", ssr=False, show_api=False)
