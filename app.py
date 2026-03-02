@@ -176,7 +176,7 @@ h2 { font-size: 1.8em !important; margin-top: 15px !important; }
 }
 """
 
-with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as demo:
+with gr.Blocks(title="Banned by 21") as demo:
     gr.Markdown("# Banned by 21: Quebec Employment Eligibility")
     
     with gr.Tabs() as tabs:
@@ -265,4 +265,4 @@ with gr.Blocks(title="Banned by 21", theme=gr.themes.Soft(), css=custom_css) as 
     gr.Markdown("*Created by Bilal Shirazi (bilalshirazi.com)*")
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", show_api=False)
+    demo.launch(server_name="0.0.0.0", theme=gr.themes.Soft(), css=custom_css)
