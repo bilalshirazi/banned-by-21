@@ -147,18 +147,23 @@ h2 { font-size: 2.0em !important; margin-top: 20px !important; line-height: 1.3 
     border-radius: 12px; margin-top: 10px;
 }
 
-/* Expert Grid Fix */
-#perspective-gallery [role="grid"], #perspective-gallery .grid-wrap {
+/* Expert Grid Fix - Forced Multi-Column Flow */
+#perspective-gallery [role="grid"], 
+#perspective-gallery .grid-wrap,
+#perspective-gallery .gallery {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, 60px) !important;
-    gap: 12px !important;
+    grid-template-columns: repeat(auto-fill, 60px) !important;
+    grid-auto-rows: 60px !important;
+    gap: 10px !important;
     justify-content: center !important;
+    width: 100% !important;
     overflow: visible !important;
 }
 #perspective-gallery button.gallery-item {
     width: 60px !important; height: 60px !important;
     padding: 0 !important; border-radius: 8px !important;
     border: 1px solid var(--border-color-primary) !important;
+    flex: none !important;
 }
 #perspective-gallery img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
 
