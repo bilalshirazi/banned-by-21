@@ -28,6 +28,7 @@ _processor = None
 def get_model():
     global _model, _processor
     if _model is None:
+        gr.Info("Initializing AI model for the first time... please wait a few seconds.")
         print("Loading CLIP model (lazy load)...")
         # Load in float32 for CPU stability, but keep memory usage low
         _model = CLIPModel.from_pretrained(model_id, low_cpu_mem_usage=True).to(device)
@@ -187,7 +188,7 @@ custom_css = """
 .main-wrap { 
     max-width: 900px !important; 
     margin: 0 auto !important; 
-    padding: 16px !important; 
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom)) 16px !important; 
 }
 
 /* Typography */
@@ -207,7 +208,9 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
     white-space: nowrap !important; 
     gap: 8px !important; 
     padding: 4px !important;
-    background: var(--background-fill-secondary) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
     border-radius: 12px !important;
     border: 1px solid var(--border-color) !important;
     scrollbar-width: none;
