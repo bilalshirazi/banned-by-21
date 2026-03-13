@@ -169,7 +169,7 @@ def get_eligibility(image, job):
         <p style="margin: 10px 0 0 0; font-size: 1.1em;">{reason}</p>
     </div>"""
 
-/* --- 4. Custom Styling --- */
+# --- 4. Custom Styling ---
 custom_css = """
 /* Reset & Base */
 :root {
