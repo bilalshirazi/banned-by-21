@@ -20,8 +20,19 @@ DATA_DIR = os.path.join(BASE_DIR, "data/test_images")
 
 model_id = "openai/clip-vit-base-patch32"
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model = CLIPModel.from_pretrained(model_id, low_cpu_mem_usage=True).to(device)
-processor = CLIPProcessor.from_pretrained(model_id)
+
+# Lazy Loading Pattern to save memory on Startup
+_model = None
+_processor = None
+
+def get_model():
+    global _model, _processor
+    if _model is None:
+        print("Loading CLIP model (lazy load)...")
+        # Load in float32 for CPU stability, but keep memory usage low
+        _model = CLIPModel.from_pretrained(model_id, low_cpu_mem_usage=True).to(device)
+        _processor = CLIPProcessor.from_pretrained(model_id)
+    return _model, _processor
 
 DETECTION_LABELS = [
     "a person wearing a religious hijab",
@@ -127,9 +138,13 @@ PERSPECTIVE_GALLERY = sorted(glob.glob(os.path.join(DATA_DIR, "*.png")))
 # --- 3. Logic Engine ---
 def analyze_image(image):
     if image is None: return None, 0.0
-    inputs = processor(text=DETECTION_LABELS, images=image, return_tensors="pt", padding=True).to(device)
+    
+    # Use lazy model loading
+    clip_model, clip_processor = get_model()
+    
+    inputs = clip_processor(text=DETECTION_LABELS, images=image, return_tensors="pt", padding=True).to(device)
     with torch.no_grad():
-        outputs = model(**inputs)
+        outputs = clip_model(**inputs)
     probs = outputs.logits_per_image.softmax(dim=1)
     max_idx = probs.argmax().item()
     return DETECTION_LABELS[max_idx], probs[0][max_idx].item()
