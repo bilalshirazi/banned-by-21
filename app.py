@@ -154,58 +154,146 @@ def get_eligibility(image, job):
         <p style="margin: 10px 0 0 0; font-size: 1.1em;">{reason}</p>
     </div>"""
 
-# --- 4. Custom Styling ---
+/* --- 4. Custom Styling --- */
 custom_css = """
 /* Reset & Base */
-.gradio-container { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; }
-.main-wrap { max-width: 1100px !important; margin: 0 auto !important; padding: 20px !important; }
+:root {
+    --primary-color: #ef4444;
+    --accent-color: #1d4ed8;
+    --bg-secondary: var(--background-fill-secondary);
+    --border-color: var(--border-color-primary);
+}
 
-/* Remove Double Scrollbars */
+.gradio-container { 
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; 
+    background-color: var(--background-fill-primary) !important;
+}
+
+.main-wrap { 
+    max-width: 900px !important; 
+    margin: 0 auto !important; 
+    padding: 16px !important; 
+}
+
+/* Typography */
+h1 { font-size: 2rem !important; font-weight: 800 !important; letter-spacing: -0.02em !important; line-height: 1.2 !important; margin-bottom: 0.5rem !important; }
+h2 { font-size: 1.5rem !important; font-weight: 700 !important; margin-top: 1.5rem !important; }
+p { line-height: 1.6 !important; }
+
+/* Remove Double Scrollbars & Fix Height */
 body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
 .gradio-container { min-height: 100vh !important; height: auto !important; }
 
-/* Mobile-First Tab Fixes */
-.tabs { display: flex !important; flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
-.tab-nav { display: flex !important; width: 100% !important; border-bottom: 1px solid var(--border-color-primary) !important; }
-.tab-nav button { flex: 1 1 auto !important; min-width: 0 !important; padding: 10px 5px !important; font-size: 0.85em !important; text-align: center !important; }
-
-/* Component Styling */
-.hero-section { text-align: center; margin-bottom: 40px; }
-.hero-image { max-width: 400px; width: 100%; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin: 0 auto 20px; display: block; }
-
-.stat-box { 
-    background: var(--background-fill-secondary); padding: 24px; border-radius: 12px; text-align: center; 
-    border: 1px solid var(--border-color-primary); margin-bottom: 16px; 
+/* Mobile-First Tabs (Segmented Control Style) */
+.tabs { border: none !important; background: transparent !important; }
+.tab-nav { 
+    display: flex !important; 
+    overflow-x: auto !important; 
+    white-space: nowrap !important; 
+    gap: 8px !important; 
+    padding: 4px !important;
+    background: var(--background-fill-secondary) !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--border-color) !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
-.stat-box h2 { font-size: 2.8em !important; color: #ef4444 !important; margin: 0 !important; font-weight: 800; }
+.tab-nav::-webkit-scrollbar { display: none; }
 
-.result-box { background: var(--background-fill-primary); padding: 20px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.tab-nav button { 
+    flex: 1 1 auto !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 8px 16px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    color: var(--body-text-color-subdued) !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+}
 
-/* Unified Input UX */
-.unified-input-container { background: var(--background-fill-secondary); padding: 20px; border-radius: 20px; border: 1px solid var(--border-color-primary); }
+.tab-nav button.selected { 
+    background: var(--background-fill-primary) !important;
+    color: var(--body-text-color) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Hero Section */
+.hero-section { text-align: center; margin-bottom: 2rem; padding: 1rem 0; }
+.hero-image { 
+    max-width: 320px; 
+    width: 90%; 
+    border-radius: 16px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+    margin: 0 auto 1.5rem; 
+    display: block; 
+}
+
+/* Stat Boxes */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 1rem 0; }
+.stat-box { 
+    background: var(--bg-secondary); 
+    padding: 1.5rem; 
+    border-radius: 16px; 
+    text-align: center; 
+    border: 1px solid var(--border-color); 
+}
+.stat-box h2 { font-size: 2.5rem !important; color: var(--primary-color) !important; margin: 0 !important; font-weight: 800; line-height: 1 !important; }
+.stat-box p { font-size: 0.9rem !important; margin-top: 0.5rem !important; font-weight: 500; }
+
+/* Result UX */
+.result-box { 
+    background: var(--background-fill-primary); 
+    padding: 24px; 
+    border-radius: 16px; 
+    margin-top: 1.5rem; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid var(--border-color);
+}
 
 /* Donation Cards Grid */
-.donation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px; }
-.donation-card { background: var(--background-fill-secondary); padding: 25px; border-radius: 16px; border: 1px solid var(--border-color-primary); text-align: center; display: flex; flex-direction: column; align-items: center; }
-.card-logo { height: 50px; margin-bottom: 20px; object-fit: contain; }
-.donation-card h3 { margin: 0 0 15px 0; font-size: 1.3em; }
-.donation-card p { font-size: 0.95em; color: var(--body-text-color-subdued); margin-bottom: 15px; line-height: 1.5; flex-grow: 1; }
-.meta-text { font-size: 0.8em !important; color: var(--body-text-color-subdued); margin-bottom: 20px; line-height: 1.4; }
-.cta-button { background: #1d4ed8; color: white !important; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; width: 100%; transition: background 0.2s; }
-.cta-button:hover { background: #1e40af; }
-
-.glossary-box { background: var(--background-fill-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid #1d4ed8; margin-bottom: 12px; }
-
-/* Video Wrapper */
-.video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 16px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-.video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.donation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 2rem; }
+.donation-card { 
+    background: var(--bg-secondary); 
+    padding: 24px; 
+    border-radius: 20px; 
+    border: 1px solid var(--border-color); 
+    text-align: center; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+}
+.card-logo { height: 48px; margin-bottom: 1rem; object-fit: contain; }
+.donation-card h3 { margin: 0 0 0.75rem 0; font-size: 1.25rem; font-weight: 700; }
+.donation-card p { font-size: 0.9rem !important; color: var(--body-text-color-subdued); margin-bottom: 1rem; line-height: 1.5; flex-grow: 1; }
+.meta-text { font-size: 0.75rem !important; color: var(--body-text-color-subdued); margin-bottom: 1.5rem; line-height: 1.4; }
+.cta-button { 
+    background: var(--accent-color) !important; 
+    color: white !important; 
+    padding: 14px 24px !important; 
+    border-radius: 12px !important; 
+    text-decoration: none !important; 
+    font-weight: 700 !important; 
+    width: 100% !important; 
+    display: block;
+}
 
 /* Mobile Optimizations */
 @media (max-width: 640px) {
-    .main-wrap { padding: 10px !important; }
-    .hero-image { max-width: 100%; }
-    .tab-nav button { font-size: 0.75em !important; letter-spacing: -0.02em; }
+    .main-wrap { padding: 12px !important; }
+    h1 { font-size: 1.75rem !important; }
+    .hero-image { max-width: 280px; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .donation-grid { grid-template-columns: 1fr; }
+    .tab-nav { padding: 4px !important; border-radius: 10px !important; }
+    .tab-nav button { padding: 6px 12px !important; font-size: 0.85rem !important; }
 }
+
+/* Video Wrapper */
+.video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+.video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+.glossary-box { background: var(--bg-secondary); padding: 16px; border-radius: 12px; border-left: 4px solid var(--accent-color); margin-bottom: 1rem; }
 """
 
 # Determine where to pass 'css' based on Gradio version
@@ -230,28 +318,33 @@ with gr.Blocks(**blocks_kwargs) as demo:
         with gr.Tabs() as tabs:
             with gr.Tab("Home", id="home"):
                 with gr.Row():
-                    with gr.Column(scale=2):
+                    with gr.Column(scale=3):
                         gr.Markdown("## The Fight for Civil Liberties")
                         gr.Markdown("In 2019, Quebec passed **Bill 21**, followed by the expansion of **Bill 94** in 2025. These laws prohibit public sector employees from wearing religious symbols while exercising their functions.")
                         start_btn = gr.Button("Enter Eligibility Checker", variant="primary", size="lg")
-                    with gr.Column(scale=1):
-                        gr.HTML('<div class="stat-box"><h2>71%</h2><p>of professionals consider leaving.</p></div><div class="stat-box"><h2>88%</h2><p>felt less welcoming.</p></div>')
+                    with gr.Column(scale=2):
+                        gr.HTML("""
+                            <div class="stat-grid">
+                                <div class="stat-box"><h2>71%</h2><p>of professionals consider leaving.</p></div>
+                                <div class="stat-box"><h2>88%</h2><p>felt less welcoming.</p></div>
+                            </div>
+                        """)
 
             with gr.Tab("Checker", id="checker"):
                 with gr.Row():
                     with gr.Column(scale=1):
                         gr.Markdown("### 1. Provide Image")
-                        with gr.Group(elem_classes="unified-input-container"):
+                        with gr.Group(elem_id="input-container"):
                             with gr.Tabs() as input_sources:
                                 with gr.Tab("Your Photo", id="upload_tab"):
                                     image_input = gr.Image(label="Identify Your Appearance", type="pil", sources=["upload", "webcam"])
                                 
                                 with gr.Tab("Examples", id="gallery_tab"):
-                                    gallery = gr.Gallery(value=PERSPECTIVE_GALLERY, columns=6, rows=4, show_label=False)
+                                    gallery = gr.Gallery(value=PERSPECTIVE_GALLERY, columns=3, rows=4, show_label=False)
                     
                     with gr.Column(scale=1):
                         gr.Markdown("### 2. Check Status")
-                        with gr.Group(elem_classes="unified-input-container"):
+                        with gr.Group(elem_id="status-container"):
                             job_dropdown = gr.Dropdown(label="Current or Target Role", choices=RESTRICTED_JOBS, value=RESTRICTED_JOBS[0])
                             submit_btn = gr.Button("Check Eligibility", variant="primary", size="lg")
                             status_output = gr.HTML('<div class="result-box">Waiting for selection...</div>')
