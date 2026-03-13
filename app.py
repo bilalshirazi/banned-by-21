@@ -322,19 +322,17 @@ with gr.Blocks(**blocks_kwargs) as demo:
                         gr.Markdown("## The Fight for Civil Liberties")
                         gr.Markdown("In 2019, Quebec passed **Bill 21**, followed by the expansion of **Bill 94** in 2025. These laws prohibit public sector employees from wearing religious symbols while exercising their functions.")
                         start_btn = gr.Button("Enter Eligibility Checker", variant="primary", size="lg")
-                    with gr.Column(scale=2):
+                    with gr.Column(scale=2, elem_classes="stat-grid"):
                         gr.HTML("""
-                            <div class="stat-grid">
-                                <div class="stat-box"><h2>71%</h2><p>of professionals consider leaving.</p></div>
-                                <div class="stat-box"><h2>88%</h2><p>felt less welcoming.</p></div>
-                            </div>
+                            <div class="stat-box"><h2>71%</h2><p>of professionals consider leaving.</p></div>
+                            <div class="stat-box"><h2>88%</h2><p>felt less welcoming.</p></div>
                         """)
 
             with gr.Tab("Checker", id="checker"):
                 with gr.Row():
-                    with gr.Column(scale=1):
+                    with gr.Column(scale=1, elem_classes="mobile-stack"):
                         gr.Markdown("### 1. Provide Image")
-                        with gr.Group(elem_id="input-container"):
+                        with gr.Group(elem_classes="unified-input-container"):
                             with gr.Tabs() as input_sources:
                                 with gr.Tab("Your Photo", id="upload_tab"):
                                     image_input = gr.Image(label="Identify Your Appearance", type="pil", sources=["upload", "webcam"])
@@ -342,9 +340,9 @@ with gr.Blocks(**blocks_kwargs) as demo:
                                 with gr.Tab("Examples", id="gallery_tab"):
                                     gallery = gr.Gallery(value=PERSPECTIVE_GALLERY, columns=3, rows=4, show_label=False)
                     
-                    with gr.Column(scale=1):
+                    with gr.Column(scale=1, elem_classes="mobile-stack"):
                         gr.Markdown("### 2. Check Status")
-                        with gr.Group(elem_id="status-container"):
+                        with gr.Group(elem_classes="unified-input-container"):
                             job_dropdown = gr.Dropdown(label="Current or Target Role", choices=RESTRICTED_JOBS, value=RESTRICTED_JOBS[0])
                             submit_btn = gr.Button("Check Eligibility", variant="primary", size="lg")
                             status_output = gr.HTML('<div class="result-box">Waiting for selection...</div>')
