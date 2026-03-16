@@ -176,6 +176,8 @@ custom_css = """
 :root {
     --primary-color: #ef4444;
     --accent-color: #1d4ed8;
+    --text-main: #111827;
+    --text-muted: #4b5563;
     --bg-secondary: var(--background-fill-secondary);
     --border-color: var(--border-color-primary);
 }
@@ -183,6 +185,12 @@ custom_css = """
 .gradio-container { 
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; 
     background-color: var(--background-fill-primary) !important;
+    color: #111827 !important;
+}
+
+/* Force High Contrast for Markdown and Body Text */
+.prose, .markdown-text, p, li, span, label, .gr-form label { 
+    color: #111827 !important; 
 }
 
 .main-wrap { 
@@ -192,9 +200,10 @@ custom_css = """
 }
 
 /* Typography */
-h1 { font-size: 2rem !important; font-weight: 800 !important; letter-spacing: -0.02em !important; line-height: 1.2 !important; margin-bottom: 0.5rem !important; }
-h2 { font-size: 1.5rem !important; font-weight: 700 !important; margin-top: 1.5rem !important; }
-p { line-height: 1.6 !important; }
+h1 { color: #111827 !important; font-size: 2rem !important; font-weight: 800 !important; letter-spacing: -0.02em !important; line-height: 1.2 !important; margin-bottom: 0.5rem !important; }
+h2 { color: #111827 !important; font-size: 1.5rem !important; font-weight: 700 !important; margin-top: 1.5rem !important; }
+h3 { color: #111827 !important; font-size: 1.25rem !important; font-weight: 700 !important; }
+p { line-height: 1.6 !important; color: #111827 !important; }
 
 /* Remove Double Scrollbars & Fix Height */
 body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
@@ -225,14 +234,14 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
     padding: 8px 16px !important;
     font-size: 0.9rem !important;
     font-weight: 600 !important;
-    color: var(--body-text-color-subdued) !important;
+    color: #4b5563 !important; /* Darker muted grey */
     border-radius: 8px !important;
     transition: all 0.2s ease !important;
 }
 
 .tab-nav button.selected { 
     background: var(--background-fill-primary) !important;
-    color: var(--body-text-color) !important;
+    color: #111827 !important; /* Pure dark for selected */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 }
 
@@ -257,7 +266,7 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
     border: 1px solid var(--border-color); 
 }
 .stat-box h2 { font-size: 2.5rem !important; color: var(--primary-color) !important; margin: 0 !important; font-weight: 800; line-height: 1 !important; }
-.stat-box p { font-size: 0.9rem !important; margin-top: 0.5rem !important; font-weight: 500; }
+.stat-box p { font-size: 0.9rem !important; color: #111827 !important; margin-top: 0.5rem !important; font-weight: 600; }
 
 /* Result UX */
 .result-box { 
@@ -312,6 +321,7 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
 .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
 .glossary-box { background: var(--bg-secondary); padding: 16px; border-radius: 12px; border-left: 4px solid var(--accent-color); margin-bottom: 1rem; }
+.disclaimer { color: #4b5563 !important; font-style: italic; margin-top: 2rem; display: block; }
 """
 
 # Determine where to pass 'css' based on Gradio version
@@ -409,7 +419,7 @@ with gr.Blocks(**blocks_kwargs) as demo:
         """)
         
         gr.Markdown("---")
-        gr.Markdown("*Disclaimer: This tool is for informational and advocacy purposes. Created by Bilal Shirazi (bilalshirazi.com)*")
+        gr.Markdown("*Disclaimer: This tool is for informational and advocacy purposes. Created by Bilal Shirazi (bilalshirazi.com)*", elem_classes="disclaimer")
 
     # --- 5. Event Handlers ---
     start_btn.click(fn=lambda: gr.Tabs(selected="checker"), outputs=tabs, api_name=False)
