@@ -315,14 +315,11 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
 """
 
 # Determine where to pass 'css' based on Gradio version
-is_v6 = version.parse(gr.__version__) >= version.parse("6.0.0")
-blocks_kwargs = {"title": "Banned by 21"}
-launch_kwargs = {"server_name": "0.0.0.0"}
-
-if is_v6:
-    launch_kwargs["css"] = custom_css
-else:
-    blocks_kwargs["css"] = custom_css
+blocks_kwargs = {
+    "title": "Banned by 21",
+    "css": custom_css,
+    "theme": gr.themes.Soft()
+}
 
 with gr.Blocks(**blocks_kwargs) as demo:
     with gr.Column(elem_classes="main-wrap"):
@@ -424,4 +421,4 @@ with gr.Blocks(**blocks_kwargs) as demo:
     submit_btn.click(fn=get_eligibility, inputs=[image_input, job_dropdown], outputs=status_output, api_name=False)
 
 if __name__ == "__main__":
-    demo.launch(**launch_kwargs)
+    demo.launch(server_name="0.0.0.0", server_port=7860, ssr=False, show_api=False)
