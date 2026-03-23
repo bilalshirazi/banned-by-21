@@ -167,7 +167,7 @@ def get_eligibility(image, job):
 
     return f"""<div class="result-box" style="border-left: 8px solid {color};">
         <h2 style="color: {color}; margin: 0;">{status}</h2>
-        <p style="margin: 10px 0 0 0; font-size: 1.1em;">{reason}</p>
+        <p style="margin: 10px 0 0 0; font-size: 1.1em; color: var(--body-text-color);">{reason}</p>
     </div>"""
 
 # --- 4. Custom Styling ---
@@ -176,21 +176,15 @@ custom_css = """
 :root {
     --primary-color: #ef4444;
     --accent-color: #1d4ed8;
-    --text-main: #111827;
-    --text-muted: #4b5563;
-    --bg-secondary: var(--background-fill-secondary);
-    --border-color: var(--border-color-primary);
 }
 
 .gradio-container { 
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; 
-    background-color: var(--background-fill-primary) !important;
-    color: #111827 !important;
 }
 
-/* Force High Contrast for Markdown and Body Text */
+/* Use Gradio Theme Variables for Colors */
 .prose, .markdown-text, p, li, span, label, .gr-form label { 
-    color: #111827 !important; 
+    color: var(--body-text-color) !important; 
 }
 
 .main-wrap { 
@@ -200,10 +194,10 @@ custom_css = """
 }
 
 /* Typography */
-h1 { color: #111827 !important; font-size: 2rem !important; font-weight: 800 !important; letter-spacing: -0.02em !important; line-height: 1.2 !important; margin-bottom: 0.5rem !important; }
-h2 { color: #111827 !important; font-size: 1.5rem !important; font-weight: 700 !important; margin-top: 1.5rem !important; }
-h3 { color: #111827 !important; font-size: 1.25rem !important; font-weight: 700 !important; }
-p { line-height: 1.6 !important; color: #111827 !important; }
+h1 { color: var(--body-text-color) !important; font-size: 2rem !important; font-weight: 800 !important; letter-spacing: -0.02em !important; line-height: 1.2 !important; margin-bottom: 0.5rem !important; }
+h2 { color: var(--body-text-color) !important; font-size: 1.5rem !important; font-weight: 700 !important; margin-top: 1.5rem !important; }
+h3 { color: var(--body-text-color) !important; font-size: 1.25rem !important; font-weight: 700 !important; }
+p { line-height: 1.6 !important; color: var(--body-text-color) !important; }
 
 /* Remove Double Scrollbars & Fix Height */
 body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
@@ -217,11 +211,9 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
     white-space: nowrap !important; 
     gap: 8px !important; 
     padding: 4px !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
+    background: var(--background-fill-secondary) !important;
     border-radius: 12px !important;
-    border: 1px solid var(--border-color) !important;
+    border: 1px solid var(--border-color-primary) !important;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -234,14 +226,14 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
     padding: 8px 16px !important;
     font-size: 0.9rem !important;
     font-weight: 600 !important;
-    color: #4b5563 !important; /* Darker muted grey */
+    color: var(--body-text-color-subdued) !important;
     border-radius: 8px !important;
     transition: all 0.2s ease !important;
 }
 
 .tab-nav button.selected { 
     background: var(--background-fill-primary) !important;
-    color: #111827 !important; /* Pure dark for selected */
+    color: var(--body-text-color) !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 }
 
@@ -259,39 +251,39 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
 /* Stat Boxes */
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 1rem 0; }
 .stat-box { 
-    background: var(--bg-secondary); 
+    background: var(--background-fill-secondary); 
     padding: 1.5rem; 
     border-radius: 16px; 
     text-align: center; 
-    border: 1px solid var(--border-color); 
+    border: 1px solid var(--border-color-primary); 
 }
 .stat-box h2 { font-size: 2.5rem !important; color: var(--primary-color) !important; margin: 0 !important; font-weight: 800; line-height: 1 !important; }
-.stat-box p { font-size: 0.9rem !important; color: #111827 !important; margin-top: 0.5rem !important; font-weight: 600; }
+.stat-box p { font-size: 0.9rem !important; color: var(--body-text-color) !important; margin-top: 0.5rem !important; font-weight: 600; }
 
 /* Result UX */
 .result-box { 
-    background: var(--background-fill-primary); 
+    background: var(--background-fill-secondary); 
     padding: 24px; 
     border-radius: 16px; 
     margin-top: 1.5rem; 
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-color-primary);
 }
 
 /* Donation Cards Grid */
 .donation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 2rem; }
 .donation-card { 
-    background: var(--bg-secondary); 
+    background: var(--background-fill-secondary); 
     padding: 24px; 
     border-radius: 20px; 
-    border: 1px solid var(--border-color); 
+    border: 1px solid var(--border-color-primary); 
     text-align: center; 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
 }
 .card-logo { height: 48px; margin-bottom: 1rem; object-fit: contain; }
-.donation-card h3 { margin: 0 0 0.75rem 0; font-size: 1.25rem; font-weight: 700; }
+.donation-card h3 { margin: 0 0 0.75rem 0; font-size: 1.25rem; font-weight: 700; color: var(--body-text-color); }
 .donation-card p { font-size: 0.9rem !important; color: var(--body-text-color-subdued); margin-bottom: 1rem; line-height: 1.5; flex-grow: 1; }
 .meta-text { font-size: 0.75rem !important; color: var(--body-text-color-subdued); margin-bottom: 1.5rem; line-height: 1.4; }
 .cta-button { 
@@ -320,8 +312,8 @@ body, html { overflow-x: hidden !important; margin: 0; padding: 0; }
 .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
 .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-.glossary-box { background: var(--bg-secondary); padding: 16px; border-radius: 12px; border-left: 4px solid var(--accent-color); margin-bottom: 1rem; }
-.disclaimer { color: #4b5563 !important; font-style: italic; margin-top: 2rem; display: block; }
+.glossary-box { background: var(--background-fill-secondary); padding: 16px; border-radius: 12px; border-left: 4px solid var(--accent-color); margin-bottom: 1rem; color: var(--body-text-color); }
+.disclaimer { color: var(--body-text-color-subdued) !important; font-style: italic; margin-top: 2rem; display: block; }
 """
 
 # Determine where to pass 'css' based on Gradio version
