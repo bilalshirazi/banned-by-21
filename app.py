@@ -390,9 +390,10 @@ with gr.Blocks(**blocks_kwargs) as demo:
                         **Bill 94:** Expands ban to all school staff.
                         
                         ### Resources
-                        - [Bill 21 Text](https://www.legisquebec.gouv.qc.ca/en/document/cs/L-0.3)
+                        - [Bill 21 Text](https://www.legisquebec.gouv.qc.ca/fr/document/lc/L-0.3?langCont=en)
                         - [Bill 94 Text](https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-94-43-1.html)
-                        - [Charter of Rights](https://www.canada.ca/en/canadian-heritage/services/how-rights-protected/guide-canadian-charter-rights-freedoms.html)
+                        - [Quebec Charter of Human Rights and Freedoms](https://www.legisquebec.gouv.qc.ca/fr/document/lc/c-12?langCont=en)
+                        - [Canadian Charter of Rights and Freedoms](https://www.canada.ca/en/canadian-heritage/services/how-rights-protected/guide-canadian-charter-rights-freedoms.html)
                         """)
                     with gr.Column():
                         gr.Markdown("### Key Terms")
